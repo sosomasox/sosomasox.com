@@ -1,0 +1,57 @@
+<head>
+    <title> {{.Site.Params.author}} | {{.Title}} </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    {{ with .Title | default .Site.Title }}
+    <title>{{ . }}</title>
+    <meta property="og:title" content="{{ . }}" />
+    <meta name="twitter:title" content="{{ . }}" />
+    {{ end }}
+
+    {{ with .Description | default ($.Param "subtitle") }}
+    <meta name="description" content="{{ . }}">
+    <meta property="og:description" content="{{ . }}">
+    <meta name="twitter:description" content="{{ . | truncate 200 }}">
+    {{ end }}
+
+    <meta name="author" content="{{ $.Param "author" }}"/>
+    <meta property="og:site_name" content="{{ .Site.Title }}" />
+    <meta property="og:url" content="{{ .Permalink }}" />
+
+    {{ with .Params.thumbnail | default ($.Param "thumbnail") }}
+    <meta property="og:image" content="{{ . | absURL }}" />
+    <meta name="twitter:image" content="{{ . | absURL }}" />
+    {{ end }}
+    <meta name="twitter:card" content="summary" />
+
+    {{ with ($.Param "twitter") }}
+    <meta name="twitter:site" content="@{{ . }}" />
+    <meta name="twitter:creator" content="@{{ . }}" />
+    {{ end }}
+
+    {{ if .IsPage }}
+    <meta property="og:type" content="article" />
+    {{ with ($.Param "facebook") }}
+    <meta property="og:article:author" content="https://facebook.com/{{ . }}" />
+    {{ end }}
+    {{ else }}
+    <meta property="og:type" content="website" />
+    {{ end }}
+
+    {{- hugo.Generator -}}
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="description" content="{{ .Site.Params.description }}">
+    <link rel="stylesheet" href="{{ `css/style.css` | absURL }}" type="text/css">
+    {{ range .Site.Params.customCss -}}
+    <link rel="stylesheet" href="{{ . | absURL }}" type="text/css">
+    {{- end }}
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <base href="{{ .Site.BaseURL }}">
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="{{ .Site.Params.favicon | absURL }}favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ .Site.Params.favicon | absURL }}apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ .Site.Params.favicon | absURL }}favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ .Site.Params.favicon | absURL }}favicon-16x16.png">
+
+    <link rel="canonical" href="{{ .Permalink }}">
+</head>

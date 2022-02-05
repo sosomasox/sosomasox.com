@@ -1,0 +1,44 @@
+baseURL = "https://sosomasox.com/"
+languageCode = "jp"
+title = "sosomasox"
+theme = "anatole"
+hasCJKLanguage = true
+#googleAnalytics = "UA-166112919-1"
+DefaultContentLanguage = "ja"
+
+[params]
+title = "sosomasox"
+author = "sosomasox"
+profilePicture = "images/profile.jpg"
+thumbnail = "images/profile.jpg"
+twitter = "sosomasox"
+commpost = true
+
+## Math settings
+[params.math]
+enable = true  # options: true, false. Enable math support globally, default: false. You can always enable math on per page.
+use = "katex"  # options: "katex", "mathjax". default is "katex".
+
+## Social links
+    [[params.socialIcons]]
+    icon = "fa-github"
+    title = "GitHub"
+    url = "https://github.com/sosomasox"
+
+    [[params.socialIcons]]
+    icon = "fa-twitter"
+    title = "Twitter"
+    url = "https://twitter.com/sosomasox"
+
+[menue]
+    [[menu.main]]
+    name = "Home"
+    identifier = "home"
+    weight = 100
+    url = "/"
+
+    [[menu.main]]
+    name = "Posts"
+    identifier = "posts"
+    weight = 200
+    url = "/posts/"
