@@ -1,9 +1,8 @@
 baseURL = "https://sosomasox.com/"
-languageCode = "jp"
+languageCode = "jalanguageCode"
 title = "sosomasox"
 theme = "anatole"
 hasCJKLanguage = true
-#googleAnalytics = "UA-166112919-1"
 DefaultContentLanguage = "ja"
 
 [params]
