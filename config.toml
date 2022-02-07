@@ -1,5 +1,5 @@
 baseURL = "https://sosomasox.com/"
-languageCode = "jalanguageCode"
+languageCode = "ja"
 title = "sosomasox"
 theme = "anatole"
 hasCJKLanguage = true
