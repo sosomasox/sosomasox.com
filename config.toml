@@ -20,12 +20,12 @@ use = "katex"  # options: "katex", "mathjax". default is "katex".
 
 ## Social links
     [[params.socialIcons]]
-    icon = "fa-github"
+    icon = "fab fa-github"
     title = "GitHub"
     url = "https://github.com/sosomasox"
 
     [[params.socialIcons]]
-    icon = "fa-twitter"
+    icon = "fab fa-twitter"
     title = "Twitter"
     url = "https://twitter.com/sosomasox"
     
@@ -46,3 +46,27 @@ use = "katex"  # options: "katex", "mathjax". default is "katex".
     identifier = "posts"
     weight = 200
     url = "/posts/"
+
+    [[menu.main]]
+    name = "Portfolio"
+    identifier = "portfolio"
+    weight = 300
+    url = "/portfolio/"
+
+    [[menu.main]]
+    name = "About"
+    identifier = "about"
+    weight = 400
+    url = "/about/"
+
+    [[menu.main]]
+    name = "Contact"
+    identifier = "contact"
+    weight = 500
+    url = "/contact/"
+
+    [[menu.footer]]
+    name = "imprint"
+    identifier = "imprint"
+    weight = 1
+    url = "/imprint/"

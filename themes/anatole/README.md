@@ -1,111 +1,70 @@
-# Anatole ![](https://img.shields.io/badge/license-MIT-blue.svg) [![Netlify Status](https://api.netlify.com/api/v1/badges/ee7a5df4-b944-4e03-853d-39219c96d484/deploy-status)](https://alexbilz.com/)
+# Anatole Hugo Theme ![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg) [![Netlify Status](https://api.netlify.com/api/v1/badges/1f4f2327-2b3f-428a-8f31-c4f921ebcc44/deploy-status)](https://app.netlify.com/sites/anatole-demo/deploys)
 
 Anatole is a beautiful minimalist two-column [hugo](https://gohugo.io/) theme based on farbox-theme-Anatole.
 
 ![Screenshot Anatole Theme](https://raw.githubusercontent.com/lxndrblz/anatole/master/images/screenshot.png)
+![Screenshot Anatole Theme (dark)](https://raw.githubusercontent.com/lxndrblz/anatole/master/images/screenshot_dark.png)
+
+## Demo
+
+A live demo of the theme can be found under the following domain:
+[https://anatole-demo.netlify.app/](https://anatole-demo.netlify.app/)
 
 ## Features
-Anatole's aims to be minimalistic and sleek, but still brings some great functionality.
 
-Features include:
-* Profile picture and slogan
-* Navigation items
-* Google Analytics
-* Comments powered by Disqus
-* Katex support
-* MIT License
-* Fontawesome icons
-* Custom CSS
+Anatole's aims to be minimalistic and sleek but still brings some great functionality, including:
 
-## Preview the exampleSite
-```
+- Dark mode
+- Multilingual
+- RTL support
+- Portfolio (optional)
+- Post Thumbnails (optional)
+- 100⁄100 Google Lighthouse score
+- Analytics powered by Google Analytics, Simple Analytics and Umami (optional)
+- Comments powered by Disqus, Commento, Gitalk or Utteranc.es (optional)
+- KaTex support (optional)
+- Formspree Contact Form (optional)
+- Twitter Cards support
+- Open Graph support
+- Google Fonts support
+- Custom JavaScript and CSS (optional)
+- Compliant to strict CSP
+- Post Series
+
+## Preview the Example Site
+
+```shell
 git clone https://github.com/lxndrblz/anatole.git anatole
 cd anatole/exampleSite
 hugo server --themesDir ../..
 ```
 
-## Quick Start
-1. Add the repository into your Hugo Project repository as a submodule: `git submodule add https://github.com/lxndrblz/anatole.git themes/anatole`.
-2. Configure your `config.toml`. Feel free to copy the demo `config.toml` and some content from the exampleSite. 
-3. Build your site with `hugo serve` and admire the result at `http://localhost:1313/`.
+## Documentation
 
-## Update your installation
-If you want to get the latest update of the `Anatole` theme please execute this command:
-```
-git submodule update --remote --merge
-```
+🚧 The documentation has moved!
 
-## Modifying the config.toml
-Ìn this section I'll discuss the custom parameters available within the `config.toml`. The complete [sample](https://github.com/lxndrblz/anatole/blob/master/exampleSite/config.toml) can be found in the exampleSite folder. 
-
-### Profile picture and slogan
-```toml
-[params]
-title = "I'm Jane Doe"
-author = "Jane Doe"
-description = "Call me Jane"
-profilePicture = "images/profile.jpg"
-```
-### Navigation items
-Non-content entries can be added right from the `config.toml` file.
-```toml
-[menu]
-
-  [[menu.main]]
-  name = "Home"
-  identifier = "home"
-  weight = 100
-  url = "/"
-
-  [[menu.main]]
-  name = "Posts"
-  weight = 200
-  identifier = "posts"
-  url = "/post/"
-```
-If you want to add content to menus, please see the `about.md` file as an example.
-```
-menu: main
-name: "About"
-weight: 300
-```
-### Comments powered by Disqus
-No comment section is shown on the `single.html`, unless a disqus code is specified in the `config.toml` file.
-```toml
-disqusShortname = "XXX"
-```
-### Google Analytics
-To use Google Analytics, a valid tracking code has to be added. If you don't want to load the code, then commend out the parameter.
-```toml
-googleAnalytics = "UA-123-45"
-```
-
-### Beautiful math functions
-```toml
-## Math settings
-[params.math]
-enable = false  # options: true, false. Enable math support globally, default: false. You can always enable math on per page.
-use = "katex"  # options: "katex", "mathjax". default is "katex".
-```
-
-### Custom CSS
-You can add your custom CSS files with the `customCss` parameter of the configuration file. Put your files into the `static/css` directory.
-
-```toml
-customCss = ["css/custom1.css", "css/custom2.css"]
-```
+The latest documentation for the theme can be found within the [Wiki Tab on GitHub](https://github.com/lxndrblz/anatole/wiki).
 
 ## License
 
 Anatole is licensed under the [MIT license](https://github.com/lxndrblz/anatole/blob/master/LICENSE).
 
-## Maintenance
+## Contributions
 
-This theme is maintained by its author [Alexander Bilz](https://github.com/lxndrblz). Please open an issue/pull request if you want to contribute in making this theme better and more feature-complete.
+This theme is maintained by its author [Alexander Bilz](https://github.com/lxndrblz) and with the help from these awesome [contributors](https://github.com/lxndrblz/anatole/graphs/contributors). All contributions (including features, translations, code cleanups, improved documentation & bugs reporting) are welcome.
+
+Read the [guidelines](https://github.com/lxndrblz/anatole/blob/master/.github/CONTRIBUTING.md) for more information about contributing to this project.
+
+## Sponsoring
+
+If you like this theme, give it a star on GitHub, and consider supporting its development:
+
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/lxndrblz/)
 
 ## Special Thanks 🎁
 
-* Go to [Cai Cai](https://github.com/hi-caicai), for the great Anatole Farbox theme that formed the foundation for this theme.
-* Go to [Kareya Saleh](https://unsplash.com/photos/tLKOj6cNwe0) for providing the profile picture in the exampleSite.
-
-
+- Go to [Cai Cai](https://github.com/hi-caicai), for the great Anatole [Farbox theme](https://github.com/hi-caicai/farbox-theme-Anatole) that formed the foundation for this theme.
+- Go to [Kareya Saleh](https://unsplash.com/photos/tLKOj6cNwe0) for providing the [profile picture](https://github.com/lxndrblz/anatole/blob/master/exampleSite/static/images/profile.jpg) used in the exampleSite.
+- Go to [Petri R](https://unsplash.com/photos/jLn20MzqfdE) for providing the [portfolio picture](https://github.com/lxndrblz/anatole/blob/master/exampleSite/static/images/portfolio/code.jpg) used in the exampleSite.
+- Go to [Ales Krivec](https://unsplash.com/photos/4miBe6zg5r0) for providing the thumbnail picture used in the exampleSite [image-test post](https://github.com/lxndrblz/anatole/blob/master/exampleSite/content/english/post/image-test.md).
+- Go to [Tobias Ahlin](https://github.com/tobiasahlin) for his [SpinKit](https://github.com/tobiasahlin/SpinKit) that is used in the exampleSite [redirect post](https://github.com/lxndrblz/anatole/blob/master/exampleSite/content/english/post/redirect.md).
