@@ -11,5 +11,10 @@ git submodule update --init --recursive
 ```
 
 ```
+/snap/bin/hugo new posts/<title>.md
+```
+
+
+```
 /snap/bin/hugo -t anatole
 ```

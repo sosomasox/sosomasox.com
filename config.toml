@@ -28,6 +28,11 @@ use = "katex"  # options: "katex", "mathjax". default is "katex".
     icon = "fa-twitter"
     title = "Twitter"
     url = "https://twitter.com/sosomasox"
+    
+    [[params.socialIcons]]
+    icon = "fas fa-envelope"
+    title = "e-mail"
+    url = "mailto:t-soma@sosomasox.com"
 
 [menue]
     [[menu.main]]
