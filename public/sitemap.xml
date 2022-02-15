@@ -2,16 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://sosomasox.com/posts/</loc>
-    <lastmod>2022-02-10T00:00:00+09:00</lastmod>
+    <loc>https://sosomasox.com/categories/</loc>
   </url><url>
     <loc>https://sosomasox.com/</loc>
-    <lastmod>2022-02-10T00:00:00+09:00</lastmod>
-  </url><url>
-    <loc>https://sosomasox.com/posts/introducing-my-home-lab-in-2022/</loc>
-    <lastmod>2022-02-10T00:00:00+09:00</lastmod>
-  </url><url>
-    <loc>https://sosomasox.com/categories/</loc>
   </url><url>
     <loc>https://sosomasox.com/tags/</loc>
   </url>
