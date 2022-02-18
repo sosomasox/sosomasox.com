@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html
+  dir="ltr"
+  lang="ja"
+  data-theme=""
+><head>
+  <title>
+    
+      sosomasox
+        |
+        Kubernetes上にGrafanaを導入してInfluxDBに保存されているFitbitデータを可視化してみた
+
+
+      
+
+
+    
+  </title>
+
+  
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.92.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta
+    name="description"
+    content="
+      
+
+
+    "
+  />
+  
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/main.min.24f9f28bfaca2cdc5a222bb5e42d30c701d7ffb0b31d30dfc4afc0e044dfbf24.css"
+    integrity="sha256-JPnyi/rKLNxaIiu15C0wxwHX/7CzHTDfxK/A4ETfvyQ="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/markupHighlight.min.058b31f17db60602cc415fd63b0427e7932fbf35c70d8e341a4c39385f5f6f3e.css"
+    integrity="sha256-BYsx8X22BgLMQV/WOwQn55MvvzXHDY40Gkw5OF9fbz4="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous"
+  />
+  
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+  <link rel="canonical" href="https://sosomasox.com/posts/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/" />
+
+  
+  
+  
+  
+  <script
+    type="text/javascript"
+    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
+    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    crossorigin="anonymous"
+  ></script>
+
+  
+    
+    
+    <script
+      type="text/javascript"
+      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
+      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      crossorigin="anonymous"
+    ></script>
+
+  
+
+  
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kubernetes上にGrafanaを導入してInfluxDBに保存されているFitbitデータを可視化してみた"/>
+<meta name="twitter:description" content="先日、『Kubernetes上にInfluxDBを導入してFitbitデータを保存してみた』という記事を書きました。 本稿は前回の記事の続きで"/>
+
+
+
+  
+
+
+  
+  
+  
+  
+  <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "articleSection": "posts",
+        "name": "Kubernetes上にGrafanaを導入してInfluxDBに保存されているFitbitデータを可視化してみた",
+        "headline": "Kubernetes上にGrafanaを導入してInfluxDBに保存されているFitbitデータを可視化してみた",
+        "alternativeHeadline": "",
+        "description": "
+      
+        先日、『Kubernetes上にInfluxDBを導入してFitbitデータを保存してみた』という記事を書きました。 本稿は前回の記事の続きで
+
+
+      
+
+
+    ",
+        "inLanguage": "ja",
+        "isFamilyFriendly": "true",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/sosomasox.com\/posts\/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb\/"
+        },
+        "author" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "creator" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "accountablePerson" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "copyrightHolder" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "copyrightYear" : "2020",
+        "dateCreated": "2020-07-01T22:02:52.00Z",
+        "datePublished": "2020-07-01T22:02:52.00Z",
+        "dateModified": "2020-07-01T22:02:52.00Z",
+        "publisher":{
+            "@type":"Organization",
+            "name": "sosomasox",
+            "url": "https://sosomasox.com/",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/sosomasox.com\/favicon-32x32.png",
+                "width":"32",
+                "height":"32"
+            }
+        },
+        "image": 
+      [
+      ]
+
+    ,
+        "url" : "https:\/\/sosomasox.com\/posts\/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb\/",
+        "wordCount" : "1953",
+        "genre" : [ ],
+        "keywords" : [ ]
+    }
+  </script>
+
+
+
+</head>
+<body>
+    <header><div
+  class="page-top 
+    animated fadeInDown
+
+  "
+>
+  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </a>
+  <nav>
+    <ul class="nav__list" id="navMenu">
+      <div class="nav__links">
+        
+        
+          
+          <li>
+            <a
+              
+              href="/"
+              
+              title=""
+              >Home</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/posts/"
+              
+              title=""
+              >Posts</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/portfolio/"
+              
+              title=""
+              >Portfolio</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/about/"
+              
+              title=""
+              >About</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/contact/"
+              
+              title=""
+              >Contact</a
+            >
+          </li>
+
+        
+      </div>
+      <ul>
+        
+        
+          <li>
+            <a class="theme-switch" title="Switch Theme">
+              <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a>
+          </li>
+
+        
+      </ul>
+    </ul>
+  </nav>
+</div>
+</header>
+    <div class="wrapper">
+      <aside><div
+  class="sidebar
+    animated fadeInDown
+
+  "
+>
+  <div class="sidebar__content">
+    <div class="logo-title">
+      <div class="title">
+        <img src="/images/profile.jpg" alt="profile picture" />
+        <h3 title=""><a href="/">sosomasox</a></h3>
+        <div class="description">
+          <p></p>
+        </div>
+      </div>
+    </div>
+    <ul class="social-links">
+      
+        <li>
+          <a href="https://github.com/sosomasox" rel="me" aria-label="GitHub" title="GitHub">
+            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://twitter.com/sosomasox" rel="me" aria-label="Twitter" title="Twitter">
+            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="mailto:t-soma@sosomasox.com" rel="me" aria-label="e-mail" title="e-mail">
+            <i class="fas fa-envelope fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+    </ul>
+  </div><footer class="footer footer--sidebar">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          sosomasox
+          2022
+
+
+        
+      </li>
+      
+        <li class="footer__item">
+          <a
+            href="/imprint/"
+            
+            title=""
+          >
+            imprint
+          </a>
+        </li>
+
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js"
+      integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB&#43;w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script></div>
+</aside>
+      <main>
+        <div class="autopagerize_page_element">
+          <div class="content">
+  <div
+    class="post 
+      animated fadeInDown
+
+    "
+  >
+    <div class="post-content">
+      
+        <img class="post-thumbnail" src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/thumbnail.png" alt="Thumbnail image" />
+
+      
+      <div class="post-title">
+        <h1>Kubernetes上にGrafanaを導入してInfluxDBに保存されているFitbitデータを可視化してみた</h1>
+        
+      </div><p> </p>
+<p>先日、<a href="https://techblog.sosomasox.com/posts/store-fitbit-data-to-influxdb-on-kubernetes/">『Kubernetes上にInfluxDBを導入してFitbitデータを保存してみた』</a>という記事を書きました。</p>
+<p>本稿は前回の記事の続きです。</p>
+<p>今回、Kubernetes上にGrafanaを導入してInfluxDBに保存されているFitbitデータの心拍数を可視化してみましたのでその紹介をしたいと思います。</p>
+<p> </p>
+<h3 id="サービス構成">サービス構成</h3>
+<p>サービス構成を下図に示します。</p>
+<p>ngrokを利用して外部からGrafanaのWebインターフェースにアクセスできるような構成にしました。</p>
+<p>Grafanaのダッシュボードをngrokを利用して公開するために <em><strong>ngrok-grafana-dp</strong></em> というDeploymentリソースを稼働させています。
+このリソースはPod内に <em><strong>ngrok-http</strong></em> コンテナと <em><strong>ngrok-proxy</strong></em> コンテナの2つのコンテナが稼働しています。</p>
+<p><em><strong>ngrok-http</strong></em> コンテナはngrokサービスに対してHTTPトンネリング接続をおこない、ローカルサービスと結びついた外部公開用URLを取得しています。
+もう一方の <em><strong>ngrok-proxy</strong></em> コンテナは <em><strong>ngrok-http</strong></em> コンテナが提供しているngrokのWebインターフェースに対するアクセスを可能にするための機能や、ngrokサービスから払い出された外部公開用URLからアクセスされたときにGrafana対してリバースプロキシする機能など <strong>サイドカーコンテナ</strong> としての役割を担っています。</p>
+<p>他のサービスとしてgrafana用のDeploymentリソースを稼働させています。
+このリソースの内ではダッシュボードを作成するにあたって、<a href="https://techblog.sosomasox.com/posts/store-fitbit-data-to-influxdb-on-kubernetes/">前回の記事</a>で導入したInfluxDBに対してアクセスをおこなっています。</p>
+<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/microservices_architecture.jpg" alt="Microservices Architecture"></p>
+<p> </p>
+<h3 id="kubernetesマニフェストファイル">Kubernetesマニフェストファイル</h3>
+<p>Grafana用のKubernetesマニフェストファイルを下記に示します。</p>
+<p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-:grafana/manifest.yaml" data-lang=":grafana/manifest.yaml">---
+
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">grafana</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">grafana</span>
+  <span style="color:#f92672">strategy</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">Recreate</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">grafana</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">grafana</span>
+        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">grafana/grafana:7.0.5</span>
+        <span style="color:#f92672">livenessProbe</span>:
+          <span style="color:#f92672">httpGet</span>:
+            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/api/health</span>
+            <span style="color:#f92672">port</span>: <span style="color:#ae81ff">3000</span>
+            <span style="color:#f92672">scheme</span>: <span style="color:#ae81ff">HTTP</span>
+          <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">180</span>
+          <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">3</span>
+          <span style="color:#f92672">timeoutSeconds</span>: <span style="color:#ae81ff">3</span>
+          <span style="color:#f92672">successThreshold</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">failureThreshold</span>: <span style="color:#ae81ff">3</span>
+        <span style="color:#f92672">ports</span>:
+        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">3000</span>
+
+---
+
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">grafana-svc-lb</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
+  <span style="color:#f92672">ports</span>:
+  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">3000</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">3000</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">grafana</span>
+
+---
+</code></pre></div><p> </p>
+<p>ngrok用のKubernetesマニフェストファイルを下記に示します。</p>
+<p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-:ngrok-grafana/manifest.yaml" data-lang=":ngrok-grafana/manifest.yaml">---
+
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Secret</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-auth-secret</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+<span style="color:#f92672">type</span>: <span style="color:#ae81ff">Opaque</span>
+<span style="color:#f92672">data</span>:
+  <span style="color:#f92672">ngrok_auth_token</span>: <span style="color:#ae81ff">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=</span>
+
+---
+
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ConfigMap</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-proxy-cm</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+<span style="color:#f92672">data</span>:
+  <span style="color:#f92672">nginx.conf</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">    user  nginx;
+</span><span style="color:#e6db74">    worker_processes  1;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    error_log  /var/log/nginx/error.log warn;
+</span><span style="color:#e6db74">    pid        /var/run/nginx.pid;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    events {
+</span><span style="color:#e6db74">        worker_connections  1024;
+</span><span style="color:#e6db74">    }
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    http {
+</span><span style="color:#e6db74">        default_type  application/octet-stream;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        log_format  main  &#39;$remote_addr - $remote_user [$time_local] &#34;$request&#34; &#39;
+</span><span style="color:#e6db74">                          &#39;$status $body_bytes_sent &#34;$http_referer&#34; &#39;
+</span><span style="color:#e6db74">                          &#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34;&#39;;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        access_log  /var/log/nginx/access.log  main;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        sendfile        on;
+</span><span style="color:#e6db74">        #tcp_nopush     on;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        keepalive_timeout  65;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        #gzip  on;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        include /etc/nginx/conf.d/*.conf;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        server {
+</span><span style="color:#e6db74">            listen 4039;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">            location / {
+</span><span style="color:#e6db74">                proxy_pass http://localhost:4040/;
+</span><span style="color:#e6db74">            }
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        }
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        server {
+</span><span style="color:#e6db74">            listen 8080;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">            location / {
+</span><span style="color:#e6db74">                proxy_pass http://grafana-svc-lb:3000/;
+</span><span style="color:#e6db74">            }
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">        }
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    }</span>    
+
+---
+
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-dp</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">ngrok-grafana</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">strategy</span>:
+    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">Recreate</span>
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">ngrok-grafana</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">ngrok-grafana</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">volumes</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-proxy-nginx-config</span>
+        <span style="color:#f92672">configMap</span>:
+          <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-proxy-cm</span>
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-proxy</span>
+        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
+        <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;izewfktvy533zjmn/ngrok-proxy:latest&#34;</span>
+        <span style="color:#f92672">ports</span>:
+        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">4039</span>
+        <span style="color:#f92672">volumeMounts</span>:
+        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-proxy-nginx-config</span>
+          <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/etc/nginx</span>
+          <span style="color:#f92672">readOnly</span>: <span style="color:#66d9ef">true</span>
+        <span style="color:#f92672">livenessProbe</span>:
+          <span style="color:#f92672">httpGet</span>:
+            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/api/tunnels</span>
+            <span style="color:#f92672">port</span>: <span style="color:#ae81ff">4039</span>
+            <span style="color:#f92672">scheme</span>: <span style="color:#ae81ff">HTTP</span>
+          <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">3</span>
+          <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">timeoutSeconds</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">successThreshold</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">failureThreshold</span>: <span style="color:#ae81ff">3</span>
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-http</span>
+        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">Always</span>
+        <span style="color:#f92672">image</span>: <span style="color:#e6db74">&#34;izewfktvy533zjmn/ngrok-http:arm32v7&#34;</span>
+        <span style="color:#f92672">livenessProbe</span>:
+          <span style="color:#f92672">httpGet</span>:
+            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/api/tunnels</span>
+            <span style="color:#f92672">port</span>: <span style="color:#ae81ff">4039</span>
+            <span style="color:#f92672">scheme</span>: <span style="color:#ae81ff">HTTP</span>
+          <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">5</span>
+          <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">timeoutSeconds</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">successThreshold</span>: <span style="color:#ae81ff">1</span>
+          <span style="color:#f92672">failureThreshold</span>: <span style="color:#ae81ff">3</span>
+        <span style="color:#f92672">env</span>:
+        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">NGROK_AUTH_TOKEN</span>
+          <span style="color:#f92672">valueFrom</span>:
+            <span style="color:#f92672">secretKeyRef</span>:
+              <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-auth-secret</span>
+              <span style="color:#f92672">key</span>: <span style="color:#ae81ff">ngrok_auth_token</span>
+
+---
+
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:  
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ngrok-grafana-svc-lb</span>
+  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
+  <span style="color:#f92672">ports</span>:  
+  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">4039</span>
+    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">4039</span>
+  <span style="color:#f92672">selector</span>:    
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">ngrok-grafana</span>
+
+---
+</code></pre></div><p> </p>
+<h3 id="稼働状況の確認">稼働状況の確認</h3>
+<p>Grafanaにアクセスするためのエンドポイントとして作成したロードバランサのIPアドレスを取得するために稼働状況を確認します。</p>
+<p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ kubectl get all -n experiment
+NAME                                         READY   STATUS    RESTARTS   AGE
+pod/alexa-skills-dp-669bc988d7-b5slm         1/1     Running   <span style="color:#ae81ff">1</span>          4d
+pod/fitbit-oauth-dp-5fbdf4d746-7sx8q         1/1     Running   <span style="color:#ae81ff">0</span>          4d
+pod/grafana-7dcf67c7c5-5xnn9                 1/1     Running   <span style="color:#ae81ff">0</span>          7m10s
+pod/influxdb-74796cc65-6df8l                 1/1     Running   <span style="color:#ae81ff">0</span>          158m
+pod/ngrok-alexa-skills-dp-84c84f6d56-jpxzj   2/2     Running   <span style="color:#ae81ff">0</span>          4d
+pod/ngrok-fitbit-oauth-dp-5b9f8dd9b-nc5nq    2/2     Running   <span style="color:#ae81ff">0</span>          3d23h
+pod/ngrok-grafana-dp-bf9c97dd6-frp7d         2/2     Running   <span style="color:#ae81ff">0</span>          77s
+
+NAME                                TYPE           CLUSTER-IP       EXTERNAL-IP     PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>          AGE
+service/alexa-skills-svc-lb         LoadBalancer   10.100.236.34    192.168.3.222   8080:32464/TCP   4d
+service/fitbit-oauth-svc-lb         LoadBalancer   10.100.38.241    192.168.3.223   8080:30058/TCP   4d
+service/grafana-svc-lb              LoadBalancer   10.110.119.123   192.168.3.227   3000:32520/TCP   7m11s
+service/influxdb-svc-lb             LoadBalancer   10.108.30.5      192.168.3.224   8086:31360/TCP   158m
+service/ngrok-alexa-skills-svc-lb   LoadBalancer   10.105.34.236    192.168.3.225   4039:31412/TCP   4d
+service/ngrok-fitbit-oauth-svc-lb   LoadBalancer   10.98.217.78     192.168.3.226   4039:30616/TCP   3d23h
+service/ngrok-grafana-svc-lb        LoadBalancer   10.103.216.118   192.168.3.228   4039:30738/TCP   4m39s
+
+NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/alexa-skills-dp         1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           4d
+deployment.apps/fitbit-oauth-dp         1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           4d
+deployment.apps/grafana                 1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           7m12s
+deployment.apps/influxdb                1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           158m
+deployment.apps/ngrok-alexa-skills-dp   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           4d
+deployment.apps/ngrok-fitbit-oauth-dp   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           3d23h
+deployment.apps/ngrok-grafana-dp        1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           4m40s
+
+NAME                                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/alexa-skills-dp-669bc988d7         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       4d
+replicaset.apps/fitbit-oauth-dp-5fbdf4d746         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       4d
+replicaset.apps/grafana-7dcf67c7c5                 <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       7m12s
+replicaset.apps/influxdb-74796cc65                 <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       158m
+replicaset.apps/ngrok-alexa-skills-dp-84c84f6d56   <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       4d
+replicaset.apps/ngrok-fitbit-oauth-dp-5b9f8dd9b    <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       3d23h
+replicaset.apps/ngrok-grafana-dp-bf9c97dd6         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       4m40s
+</code></pre></div><p> </p>
+<p>ロードバランサに対して下記のコマンドを実行することでngrokサービスによって払い出された外部公開用URLを取得します。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ curl -s 192.168.3.228:4039/api/tunnels | jq -r .tunnels<span style="color:#f92672">[]</span>.public_url | grep --color<span style="color:#f92672">=</span>never https://*
+https://xxxxxxxxxxxx.ap.ngrok.io
+</code></pre></div><p> </p>
+<h3 id="grafana-ダッシュボードの作成">Grafana ダッシュボードの作成</h3>
+<p>それではブラウザよりngrokサービスから払い出された外部公開用URLを利用して、GrafanaのWebインターフェースにアクセスしてダッシュボードを作成し、Fitbitのデータを可視化していきます。</p>
+<p>まず、アクセスするとログイン画面がでてきます。</p>
+<p> </p>
+<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/login_page_on_grafana.png" alt="Login Page on Grafana"></p>
+<p> </p>
+<p>ログイン後の画面上で <em>DATA SOURCES - Add you first data source</em> というパネルをクリックしてデータソースを追加していきます。</p>
+<p> </p>
+<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/top_page_on_grafana.png" alt="Top Page on Grafana"></p>
+<p> </p>
+<p>Time Series databaseとしてInfluxDBを選択します。</p>
+<p> </p>
+<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_data_source_on_grafana.png" alt="Add Data Source on Grafana"></p>
+<p> </p>
+<p>InfluxDBのエンドポイントURLと使用するデータベース名を記入してデータソースを作成します。</p>
+<p> </p>
+<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/data_sources_influxdb_on_grafana.png" alt="Data Sources InfluxDB on Grafana"></p>
+<p> </p>
+<p>次に、ダッシュボードを作っていきます。
+<em>Add new panel</em> をクリックします。</p>
+<p> </p>
+<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_new_panel_on_grafana.png" alt="Add New Panel on Grafana"></p>
+<p> </p>
+<p>あとはてきとうにクエリを発行します。</p>
+<p> </p>
+<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/dashboard_on_grafana.png" alt="Dashboard on Grafana"></p>
+<p> </p>
+<p>良い感じにFitbitデータの心拍数を可視化できました。</p>
+<p> </p>
+<h3 id="まとめ">まとめ</h3>
+<p>本稿では、Kubernetes上に導入したGrafanaをngrokサービスによって払い出された外部公開用URLを経由してInfluxDBに保存されているFitbitデータの心拍数を可視化したダッシュボードを作成しました。</p>
+<p>今回、実行環境として使用したサービス構成ではGrafanaでダッシュボードを作成しても、そのGrafanaが稼働しているPodが終了した場合にはダッシュボードの情報が失われてしまいます。</p>
+<p>運用していくにはGrafanaのデータを管理する構成にしていく必要がありますね。</p>
+<p> </p>
+</div>
+    <div class="post-footer">
+      <div class="info">
+        
+
+        
+      </div>
+    </div>
+
+    
+  </div>
+
+  <div>
+    
+      <div id="commpost"></div>
+<script type="text/javascript">
+    (function() {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript'; dsq.async = true; dsq.src = 'https://commpost.sosomasox.com/js/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+         var dlq = document.createElement('link');
+         dlq.rel = 'stylesheet'; dlq.type = 'text/css'; dlq.href = 'https://commpost.sosomasox.com/assets/css/embed.css';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dlq);
+    })();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+
+    
+  </div>
+
+
+          </div>
+        </div>
+      </main>
+    </div><footer class="footer footer--base">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          sosomasox
+          2022
+
+
+        
+      </li>
+      
+        <li class="footer__item">
+          <a
+            href="/imprint/"
+            
+            title=""
+          >
+            imprint
+          </a>
+        </li>
+
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
+    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    crossorigin="anonymous"
+  ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js"
+      integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB&#43;w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script></body>
+</html>
