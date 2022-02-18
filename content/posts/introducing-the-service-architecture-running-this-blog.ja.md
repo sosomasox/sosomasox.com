@@ -2,7 +2,7 @@
 title: "本ブログを運営しているサービスアーキテクチャーの紹介"
 date: 2020-05-30T15:06:15+09:00
 Description: ""
-thumbnail: images/introducing-the-service-architecture-running-this-blog/service_architecture.jpg
+thumbnail: /images/introducing-the-service-architecture-running-this-blog/service_architecture.jpg
 Tags: []
 Categories: []
 DisableComments: false
@@ -26,7 +26,7 @@ DisableComments: false
 
 &nbsp;
 
-![Service Architecture](images/introducing-the-service-architecture-running-this-blog/service_architecture.jpg)
+![Service Architecture](/images/introducing-the-service-architecture-running-this-blog/service_architecture.jpg)
 
 &nbsp;
 
@@ -36,7 +36,7 @@ DisableComments: false
 
 &nbsp;
 
-![Deformation Service Architecture](images/introducing-the-service-architecture-running-this-blog/deformation_service_architecture.jpg)
+![Deformation Service Architecture](/images/introducing-the-service-architecture-running-this-blog/deformation_service_architecture.jpg)
 
 &nbsp;
 
