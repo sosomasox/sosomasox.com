@@ -1,16 +1,18 @@
 ---
 title: "自宅ラボ環境の紹介 in 2022"
-date: 2022-02-20T00:00:00+09:00
+date: 2022-02-18T00:00:00+09:00
 Description: ""
 Tags: []
 Categories: []
-#thumbnail: images/introducing-my-home-lab-in-2022/thumbnail.png
+thumbnail: /images/introducing-my-home-lab-in-2022/thumbnail.png
 DisableComments: false
 ---
 
 &nbsp;
 
-### アーキテクチャ
+# はじめに
+
+構成や　変わったので
 
 
 
@@ -18,34 +20,48 @@ DisableComments: false
 
 
 
-### EdgerRouter X
+# アーキテクチャー
 
+雑にまとめるとこんなかんじ。
+
+&nbsp;
+
+![Architecutre](/images/introducing-my-home-lab-in-2022/architecture.png)
+
+&nbsp;
+
+
+
+## EdgerRouter X
+
+こいつが自宅ラボのインターネット接続を担っている。
+自宅ネットワークを用途別に分けたり、本ブログを外部に公開する設定を行っている。
 
 #### DNSフォワーディング
 
-LANインタフェースからのDNSクエリは、
-後述するキャッシュDNSサーバにフォワードするように設定。
+LANインタフェースからのDNSクエリは、後述するキャッシュDNSサーバにフォワードするように設定されている。
 
 
 #### ポートフォワーディング
 
-WANインターフェス pppoe0 に来たHTTP/HTTPS宛のパケットは、
-後述するリバースプロキシサーバにフォワードするように設定。
+WANインターフェスpppoe0に来たHTTP/HTTPS宛のパケットは、後述するラズパイKubernetes上で稼働しているNGINX Ingress Controllerにフォワードするように設定されている。
 
-
+本ブログは、Kubernetes上で運用しているのでこの設定でブログを外部公開している。
 
 &nbsp;
 
 
 
-### DNSサーバ
+## DNS
 
-4台のDNSサーバが稼働。
+自宅ラボ環境では4台のDNSサーバが稼働している。
+自宅で稼働しているサーバ機器やサービスに付与した独自ドメインの名前解決を行う。
 
 
 #### ns1.home.arpa
 
 ゾーン *"home.arpa."* を管理するプライマリ権威DNSサーバ。
+サーバ機器や自宅で運用するサービスのドメインを管理している。
 
 
 #### ns2.home.arpa
@@ -59,199 +75,112 @@ WANインターフェス pppoe0 に来たHTTP/HTTPS宛のパケットは、
 ゾーン *"hoem.arpa."* を管理する権威DNSサーバによって委任された、
 ゾーン *"k8s.home.arpa."* を管理する権威DNSサーバ。
 
+ラズパイKubernetes用のサーバにつけるドメインを管理している。
+
 
 #### ns-cache.home.arpa
 
-キャッシュDNSサーバ。
+独自ドメインのキャッシュDNSサーバ。
+
+自宅で稼働している全ての機器に対して名前解決を行う。
+
+&nbsp;
+
+
+## リバースプロキシサーバ
+
+自宅環境で稼働しているいろいろなサービスのHTTP接続用のリバースプロキシサーバ。
+
+後述するMinIOやGrafana、KibanaなどWeb UIが備わっているサービスに対してWebブラウザからポート指定なしで(80番ポートで)アクセスできるようにプロキシしている。
+
+&nbsp;
+
+
+## MinIO (オブジェクトストレージ)
+
+後述するLonghornやVeleroのバックアップストアとして稼働。
+分散構成はとっていない。
+
+![MinIO Dashboard](/images/introducing-my-home-lab-in-2022/minio_dashboard.png)
+
+&nbsp;
+
+
+
+## メトリクス監視
+
+EdgeRouterやDNSサーバ、ラズパイKubernetes用のさーばなど、本環境で稼働しているサーバのメトリクス監視を担う。
+
+Prometheus + 各種Exporter で構築。
+
+![Prometheus Targets](/images/introducing-my-home-lab-in-2022/prometheus_targets.png)
+
+ダッシュボードにはGrafanaを利用。
+
+![Grafana Dashboard](/images/introducing-my-home-lab-in-2022/grafana_dashboard.png)
+
+&nbsp;
+
+AlertmanagerやPushgatewayも構築済み。
+(アラートルールちゃんと整備してない)
+
+![Alertmanager Alert](/images/introducing-my-home-lab-in-2022/alertmanager_alert.png)
+
+&nbsp;
+
+
+
+## ログ収集
+
+Kubernetesで　コンテナのログ
+
+
+![Kibana Dashborad](/images/introducing-my-home-lab-in-2022/kibana_dashboard.png)
+
+&nbsp;
+
+
+
+## Wi-Fiルータ
+
+Wi-Fiルータは [tp-link Wi-Fiルータ Archer AX73](https://www.tp-link.com/jp/home-networking/wifi-router/archer-ax73/) をブリッジモードで動作させ利用している。
+
+スマホやノートPCなど無線機器が接続されてる。
 
 
 &nbsp;
 
 
 
-### リバースプロキシサーバ
-
-本ブログ公開用のリバースプロキシサーバ。
-
-後述するラズパイ Kubernetes 上で稼働している本ブログ用のWebサーバを外部公開する役割を担う。
-
-また、本ブログ用ドメインのSSL設定も担う。
-
-
-
-&nbsp;
-
-
-
-### 監視サーバ
-
-EdgeRouter や DNSサーバ、ラズパイ Kubernetes など、本環境で稼働しているサーバの監視を担う。
-
-Prometheus + 各種Exporter で構築しており、ダッシュボードには Grafana を利用。
-
-Alertmanager や Pushgateway も構築しているが、
-アラートルールの設定やPushgatewayの利用などはおいおい行う予定。
-
-
-
-&nbsp;
-
-
-
-### NFSサーバ
-
-後述する Longhorn のバックアップストアとして稼働。
-
-
-
-&nbsp;
-
-
-
-### Wi-Fiルータ
-
-tp-link Wi-Fiルータ Archer AX73
-https://www.tp-link.com/jp/home-networking/wifi-router/archer-ax73/
-
-ブリッジモードで動作
-
-
-&nbsp;
-
-
-
-### ラズパイ Kubernetes
+## ラズパイ Kubernetes
 
 
 USB接続のSSDを使用したRaspberry Pi 4 Model B 8GB に The Hard Way で構築。
 
 コントロールプレーン3台とノード5台で構成。
 
-Kubernetes のデータストアである etcd は、
-コントロールプレーンに併設し、etcd クラスタを構成。
+Kubernetes のデータストアである etcd は、コントロールプレーンに併設し、etcd クラスタを構成。
 
-また、 kube-apiserver 用のロードバランサもコントロールプレーンに併設し、
-HAPorxy + Keepalived で構築。
+また、kube-apiserver 用のロードバランサはHAPorxy + Keepalived の冗長構成でコントロールプレーンに併設。
 
 
 ```bash
 $ kubectl get nodes -o wide
 NAME                            STATUS   ROLES                     AGE     VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION     CONTAINER-RUNTIME
-control-plane-1.k8s.home.arpa   Ready    control-plane,etcd,node   5d23h   v1.23.1   192.168.114.11   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-control-plane-2.k8s.home.arpa   Ready    control-plane,etcd,node   5d23h   v1.23.1   192.168.114.12   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-control-plane-3.k8s.home.arpa   Ready    control-plane,etcd,node   5d23h   v1.23.1   192.168.114.13   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-node-1.k8s.home.arpa            Ready    node                      5d23h   v1.23.1   192.168.114.14   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-node-2.k8s.home.arpa            Ready    node                      5d23h   v1.23.1   192.168.114.15   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-node-3.k8s.home.arpa            Ready    node                      5d23h   v1.23.1   192.168.114.16   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-node-4.k8s.home.arpa            Ready    node                      5d23h   v1.23.1   192.168.114.17   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-node-5.k8s.home.arpa            Ready    node                      5d23h   v1.23.1   192.168.114.18   <none>        Ubuntu 20.04.3 LTS   5.4.0-1047-raspi   containerd://1.5.5
-```
-
-&nbsp;
-
-#### kube-apiserver
-
-```bash
-$ for i in `seq 1 3`; \
-  do echo control-plane-${i}.k8s.home.arpa && \
-     curl -sk --cacert certs/cacert/kubernetes-ca.pem \
-          --cert certs/cert/admin.pem \
-          --key certs/cert/admin-key.pem \
-          https://control-plane-${i}.k8s.home.arpa:6443/healthz && \
-     echo; \
-  done
-control-plane-1.k8s.home.arpa
-ok
-control-plane-2.k8s.home.arpa
-ok
-control-plane-3.k8s.home.arpa
-ok
-```
-
-&nbsp;
-
-#### kube-controller-manager
-
-```bash
-$ for i in `seq 1 3`; \
-  do echo control-plane-${i}.k8s.home.arpa && \
-     curl -sk --cacert certs/cacert/kubernetes-ca.pem \
-          --cert certs/cert/admin.pem \
-          --key certs/cert/admin-key.pem \
-          https://control-plane-${i}.k8s.home.arpa:10257/metrics | grep leader && \
-     echo; \
-  done
-control-plane-1.k8s.home.arpa
-# HELP leader_election_master_status [ALPHA] Gauge of if the reporting system is master of the relevant lease, 0 indicates backup, 1 indicates master. 'name' is the string used to identify the lease. Please make sure to group by name.
-# TYPE leader_election_master_status gauge
-leader_election_master_status{name="kube-controller-manager"} 0
-
-control-plane-2.k8s.home.arpa
-# HELP leader_election_master_status [ALPHA] Gauge of if the reporting system is master of the relevant lease, 0 indicates backup, 1 indicates master. 'name' is the string used to identify the lease. Please make sure to group by name.
-# TYPE leader_election_master_status gauge
-leader_election_master_status{name="kube-controller-manager"} 0
-
-control-plane-3.k8s.home.arpa
-# HELP leader_election_master_status [ALPHA] Gauge of if the reporting system is master of the relevant lease, 0 indicates backup, 1 indicates master. 'name' is the string used to identify the lease. Please make sure to group by name.
-# TYPE leader_election_master_status gauge
-leader_election_master_status{name="kube-controller-manager"} 1
-
-```
-
-&nbsp;
-
-#### kube-scheduler
-
-```bash
-$ for i in `seq 1 3`; \
-  do echo control-plane-${i}.k8s.home.arpa && \
-     curl -sk --cacert certs/cacert/kubernetes-ca.pem \
-          --cert certs/cert/admin.pem \
-          --key certs/cert/admin-key.pem \
-          https://control-plane-${i}.k8s.home.arpa:10259/metrics | grep leader && \
-     echo; \
-  done
-control-plane-1.k8s.home.arpa
-# HELP leader_election_master_status [ALPHA] Gauge of if the reporting system is master of the relevant lease, 0 indicates backup, 1 indicates master. 'name' is the string used to identify the lease. Please make sure to group by name.
-# TYPE leader_election_master_status gauge
-leader_election_master_status{name="kube-scheduler"} 1
-
-control-plane-2.k8s.home.arpa
-# HELP leader_election_master_status [ALPHA] Gauge of if the reporting system is master of the relevant lease, 0 indicates backup, 1 indicates master. 'name' is the string used to identify the lease. Please make sure to group by name.
-# TYPE leader_election_master_status gauge
-leader_election_master_status{name="kube-scheduler"} 0
-
-control-plane-3.k8s.home.arpa
-# HELP leader_election_master_status [ALPHA] Gauge of if the reporting system is master of the relevant lease, 0 indicates backup, 1 indicates master. 'name' is the string used to identify the lease. Please make sure to group by name.
-# TYPE leader_election_master_status gauge
-leader_election_master_status{name="kube-scheduler"} 0
-
-```
-
-&nbsp;
-
-#### etcd
-
-```bash
-$ etcdctl endpoint status \
-  --write-out=table \
-  --endpoints=etcd-1.k8s.home.arpa:2379,etcd-2.k8s.home.arpa:2379,etcd-3.k8s.home.arpa:2379 \
-  --cacert certs/cacert/etcd-ca.pem \
-  --cert certs/cert/etcd-healthcheck-client.pem \
-  --key certs/cert/etcd-healthcheck-client-key.pem
-+---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
-|         ENDPOINT          |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
-+---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
-| etcd-1.k8s.home.arpa:2379 | fdcfe469e2ea5c2f |   3.5.1 |   13 MB |     false |      false |         4 |    2002684 |            2002684 |        |
-| etcd-2.k8s.home.arpa:2379 | 190c90c8c6646854 |   3.5.1 |   13 MB |     false |      false |         4 |    2002684 |            2002684 |        |
-| etcd-3.k8s.home.arpa:2379 | c445fc3c8ea2c548 |   3.5.1 |   13 MB |      true |      false |         4 |    2002685 |            2002685 |        |
-+---------------------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
+control-plane-1.k8s.home.arpa   Ready    control-plane,etcd,node   7d11h   v1.23.1   192.168.114.11   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
+control-plane-2.k8s.home.arpa   Ready    control-plane,etcd,node   7d11h   v1.23.1   192.168.114.12   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
+control-plane-3.k8s.home.arpa   Ready    control-plane,etcd,node   7d11h   v1.23.1   192.168.114.13   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
+node-1.k8s.home.arpa            Ready    node                      7d11h   v1.23.1   192.168.114.14   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
+node-2.k8s.home.arpa            Ready    node                      7d11h   v1.23.1   192.168.114.15   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
+node-3.k8s.home.arpa            Ready    node                      7d11h   v1.23.1   192.168.114.16   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
+node-4.k8s.home.arpa            Ready    node                      7d11h   v1.23.1   192.168.114.17   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
+node-5.k8s.home.arpa            Ready    node                      7d11h   v1.23.1   192.168.114.18   <none>        Ubuntu 20.04.3 LTS   5.4.0-1050-raspi   containerd://1.5.5
 ```
 
 &nbsp;
 
 
-#### MetalLB
+## MetalLB
 
 ベアメタル環境の Kubernetes において、 
 Service リソースで type: LoadBalaner を使用するために導入。
@@ -421,7 +350,7 @@ nginx.k8s.		30	IN	A	192.168.115.2
 
 #### Longhorn
 
-![Longhorn Dashboard](../../images/introducing-my-home-lab-in-2022/longhorn_dashboard.png)
+![Longhorn Dashboard](/images/introducing-my-home-lab-in-2022/longhorn_dashboard.png)
 
 
 &nbsp;
