@@ -4,7 +4,7 @@ date: 2020-07-01T22:02:52+09:00
 Description: ""
 Tags: []
 Categories: []
-thumbnail: images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/thumbnail.png
+thumbnail: /images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/thumbnail.png
 DisableComments: false
 ---
 
@@ -35,7 +35,7 @@ Grafanaのダッシュボードをngrokを利用して公開するために ***n
 他のサービスとしてgrafana用のDeploymentリソースを稼働させています。
 このリソースの内ではダッシュボードを作成するにあたって、[前回の記事](https://techblog.sosomasox.com/posts/store-fitbit-data-to-influxdb-on-kubernetes/)で導入したInfluxDBに対してアクセスをおこなっています。
 
-![Microservices Architecture](images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/microservices_architecture.jpg)
+![Microservices Architecture](/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/microservices_architecture.jpg)
 
 &nbsp;
 
@@ -334,7 +334,7 @@ https://xxxxxxxxxxxx.ap.ngrok.io
 
 &nbsp;
 
-![Login Page on Grafana](images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/login_page_on_grafana.png)
+![Login Page on Grafana](/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/login_page_on_grafana.png)
 
 &nbsp;
 
@@ -342,7 +342,7 @@ https://xxxxxxxxxxxx.ap.ngrok.io
 
 &nbsp;
 
-![Top Page on Grafana](images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/top_page_on_grafana.png)
+![Top Page on Grafana](/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/top_page_on_grafana.png)
 
 &nbsp;
 
@@ -350,7 +350,7 @@ Time Series databaseとしてInfluxDBを選択します。
 
 &nbsp;
 
-![Add Data Source on Grafana](images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_data_source_on_grafana.png)
+![Add Data Source on Grafana](/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_data_source_on_grafana.png)
 
 &nbsp;
 
@@ -358,7 +358,7 @@ InfluxDBのエンドポイントURLと使用するデータベース名を記入
 
 &nbsp;
 
-![Data Sources InfluxDB on Grafana](images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/data_sources_influxdb_on_grafana.png)
+![Data Sources InfluxDB on Grafana](/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/data_sources_influxdb_on_grafana.png)
 
 &nbsp;
 
@@ -367,7 +367,7 @@ _Add new panel_ をクリックします。
 
 &nbsp;
 
-![Add New Panel on Grafana](images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_new_panel_on_grafana.png)
+![Add New Panel on Grafana](/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_new_panel_on_grafana.png)
 
 &nbsp;
 
@@ -376,7 +376,7 @@ _Add new panel_ をクリックします。
 
 &nbsp;
 
-![Dashboard on Grafana](images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/dashboard_on_grafana.png)
+![Dashboard on Grafana](/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/dashboard_on_grafana.png)
 
 &nbsp;
 

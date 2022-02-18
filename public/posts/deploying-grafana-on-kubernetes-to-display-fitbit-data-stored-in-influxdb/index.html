@@ -376,7 +376,7 @@
 もう一方の <em><strong>ngrok-proxy</strong></em> コンテナは <em><strong>ngrok-http</strong></em> コンテナが提供しているngrokのWebインターフェースに対するアクセスを可能にするための機能や、ngrokサービスから払い出された外部公開用URLからアクセスされたときにGrafana対してリバースプロキシする機能など <strong>サイドカーコンテナ</strong> としての役割を担っています。</p>
 <p>他のサービスとしてgrafana用のDeploymentリソースを稼働させています。
 このリソースの内ではダッシュボードを作成するにあたって、<a href="https://techblog.sosomasox.com/posts/store-fitbit-data-to-influxdb-on-kubernetes/">前回の記事</a>で導入したInfluxDBに対してアクセスをおこなっています。</p>
-<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/microservices_architecture.jpg" alt="Microservices Architecture"></p>
+<p><img src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/microservices_architecture.jpg" alt="Microservices Architecture"></p>
 <p> </p>
 <h3 id="kubernetesマニフェストファイル">Kubernetesマニフェストファイル</h3>
 <p>Grafana用のKubernetesマニフェストファイルを下記に示します。</p>
@@ -638,28 +638,28 @@ https://xxxxxxxxxxxx.ap.ngrok.io
 <p>それではブラウザよりngrokサービスから払い出された外部公開用URLを利用して、GrafanaのWebインターフェースにアクセスしてダッシュボードを作成し、Fitbitのデータを可視化していきます。</p>
 <p>まず、アクセスするとログイン画面がでてきます。</p>
 <p> </p>
-<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/login_page_on_grafana.png" alt="Login Page on Grafana"></p>
+<p><img src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/login_page_on_grafana.png" alt="Login Page on Grafana"></p>
 <p> </p>
 <p>ログイン後の画面上で <em>DATA SOURCES - Add you first data source</em> というパネルをクリックしてデータソースを追加していきます。</p>
 <p> </p>
-<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/top_page_on_grafana.png" alt="Top Page on Grafana"></p>
+<p><img src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/top_page_on_grafana.png" alt="Top Page on Grafana"></p>
 <p> </p>
 <p>Time Series databaseとしてInfluxDBを選択します。</p>
 <p> </p>
-<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_data_source_on_grafana.png" alt="Add Data Source on Grafana"></p>
+<p><img src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_data_source_on_grafana.png" alt="Add Data Source on Grafana"></p>
 <p> </p>
 <p>InfluxDBのエンドポイントURLと使用するデータベース名を記入してデータソースを作成します。</p>
 <p> </p>
-<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/data_sources_influxdb_on_grafana.png" alt="Data Sources InfluxDB on Grafana"></p>
+<p><img src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/data_sources_influxdb_on_grafana.png" alt="Data Sources InfluxDB on Grafana"></p>
 <p> </p>
 <p>次に、ダッシュボードを作っていきます。
 <em>Add new panel</em> をクリックします。</p>
 <p> </p>
-<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_new_panel_on_grafana.png" alt="Add New Panel on Grafana"></p>
+<p><img src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/add_new_panel_on_grafana.png" alt="Add New Panel on Grafana"></p>
 <p> </p>
 <p>あとはてきとうにクエリを発行します。</p>
 <p> </p>
-<p><img src="images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/dashboard_on_grafana.png" alt="Dashboard on Grafana"></p>
+<p><img src="/images/deploying-grafana-on-kubernetes-to-display-fitbit-data-stored-in-influxdb/dashboard_on_grafana.png" alt="Dashboard on Grafana"></p>
 <p> </p>
 <p>良い感じにFitbitデータの心拍数を可視化できました。</p>
 <p> </p>

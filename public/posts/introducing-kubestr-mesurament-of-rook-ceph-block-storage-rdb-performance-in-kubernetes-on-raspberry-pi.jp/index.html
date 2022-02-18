@@ -365,7 +365,7 @@
       </div><p> </p>
 <p><a href="https://www.youtube.com/watch?v=VxRDMBmaDgU&amp;t=2135s">kubenews #14</a>で紹介されていた<a href="https://kubestr.io/">kubestr</a>というツールを紹介していたのでラズパイKubernetesクラスター上で使用してみました。</p>
 <p> </p>
-<p><img src="images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/thumbnail.png" alt="Thumbnail"></p>
+<p><img src="/images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/thumbnail.png" alt="Thumbnail"></p>
 <p> </p>
 <p><a href="https://kubestr.io/">kubestr</a>はKubernetesでストレージを使用するためにストレージの発見、検証、評価をおこなうことが可能なツールです。</p>
 <p>kubestrを使用することで以下のようなことができます。</p>
@@ -431,13 +431,13 @@ index cbd966c..ac5263f <span style="color:#ae81ff">100644</span>
 </code></pre></div><p> </p>
 <p>kubestrコマンドを実行できるか確認します。</p>
 <p>下図は筆者の環境上での実行結果です。</p>
-<p><img src="images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr.png" alt="kubestr"></p>
+<p><img src="/images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr.png" alt="kubestr"></p>
 <p> </p>
 <h3 id="kubestrを使用したブロックストレージrbdに対してパフォーマンス測定">kubestrを使用したブロックストレージ(RBD)に対してパフォーマンス測定</h3>
 <p>kubestrを使用したストレージのパフォーマンス測定は下記のコマンドで実行できます。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./kubestr fio -s &lt;storage class&gt;
 </code></pre></div><p>下図は筆者の環境上での実行結果です。</p>
-<p><img src="images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr_fio_rbd.png" alt="kubestr_fio_rbd"></p>
+<p><img src="/images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr_fio_rbd.png" alt="kubestr_fio_rbd"></p>
 <p> </p>
 <h3 id="最後に">最後に</h3>
 <p>本稿では、kubestrをarm64アーキテクチャー用にビルドし、kubestrを使用したブロックストレージ(RBD)に対してパフォーマンス測定を行いました。</p>

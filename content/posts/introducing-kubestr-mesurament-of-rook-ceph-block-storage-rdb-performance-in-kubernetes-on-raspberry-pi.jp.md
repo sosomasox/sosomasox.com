@@ -14,7 +14,7 @@ DisableComments: false
 
 &nbsp;
 
-![Thumbnail](images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/thumbnail.png)
+![Thumbnail](/images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/thumbnail.png)
 
 &nbsp;
 
@@ -120,7 +120,7 @@ kubestrコマンドを実行できるか確認します。
 
 下図は筆者の環境上での実行結果です。
 
-![kubestr](images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr.png)
+![kubestr](/images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr.png)
 
 &nbsp;
 
@@ -136,7 +136,7 @@ kubestrを使用したストレージのパフォーマンス測定は下記の�
 
 下図は筆者の環境上での実行結果です。
 
-![kubestr_fio_rbd](images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr_fio_rbd.png)
+![kubestr_fio_rbd](/images/introducing-kubestr-mesurament-of-rook-ceph-block-storage-rdb-performance-in-kubernetes-on-raspberry-pi/kubestr_fio_rbd.png)
 
 &nbsp;
 
