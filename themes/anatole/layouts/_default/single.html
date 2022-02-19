@@ -1,5 +1,14 @@
 {{ define "main" }}
-  
+
+  {{- with .Params.thumbnail | default .Params.image | default .Site.Params.logo }}
+  <meta name="twitter:image" content="{{ . | absURL }}" />
+  {{- end }}
+  <meta name="twitter:card" content="summary_large_image" />
+  {{- with .Site.Author.twitter }}
+  <meta name="twitter:site" content="@{{ . }}" />
+  <meta name="twitter:creator" content="@{{ . }}" />
+  {{- end }}
+
   {{- with .Title | default .Site.Title }}
   <meta property="og:title" content="{{ . }}" />
   {{- end }}
