@@ -1,6 +1,6 @@
 ---
 title: "自宅ラボ環境の紹介 in 2022"
-date: 2022-02-18T00:00:00+09:00
+date: 2022-02-19T00:00:00+09:00
 Description: ""
 Tags: []
 Categories: []
@@ -345,6 +345,24 @@ Webダッシュボードもあって結構使いやすい。
 
 ![Longhorn Dashboard](/images/introducing-my-home-lab-in-2022/longhorn_dashboard.png)
 
+
+&nbsp;
+
+
+
+### [Fluentd](https://github.com/fluent/fluentd-kubernetes-daemonset)
+
+コンテナのログをログ収集基盤に集約するために導入。
+
+&nbsp;
+
+
+
+### [Velero](https://github.com/vmware-tanzu/velero)
+
+ラズパイKubernetesのバックアップ用に導入。
+
+検証中。
 
 &nbsp;
 
