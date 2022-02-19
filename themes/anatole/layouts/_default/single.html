@@ -1,10 +1,16 @@
 {{ define "main" }}
-
+  
+  {{- with .Title | default .Site.Title }}
+  <meta name="twitter:title" content="{{ . | truncate 70 }}" />
+  {{- end }}
+  {{- with .Description | default .Params.subtitle | default .Summary }}
+  <meta name="twitter:description" content="{{ . | truncate 200 }}">
+  {{- end }}
   {{- with .Params.thumbnail | default .Params.image | default .Site.Params.logo }}
   <meta name="twitter:image" content="{{ . | absURL }}" />
   {{- end }}
   <meta name="twitter:card" content="summary_large_image" />
-  {{- with .Site.Author.twitter }}
+  {{- with .Site.Params.twitter }}
   <meta name="twitter:site" content="@{{ . }}" />
   <meta name="twitter:creator" content="@{{ . }}" />
   {{- end }}
@@ -17,9 +23,6 @@
   {{- end }}
   {{- with .Params.thumbnail | default .Params.image | default .Site.Params.logo }}
   <meta property="og:image" content="{{ . | absURL }}" />
-  {{- end }}
-  {{- with .Site.Params.fb_app_id }}
-  <meta property="fb:app_id" content="{{ . }}" />
   {{- end }}
   <meta property="og:url" content="{{ .Permalink | absLangURL }}" />
   <meta property="og:type" content="website" />
