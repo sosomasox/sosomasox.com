@@ -119,6 +119,8 @@ Prometheus + 各種Exporter で構築。
 
 ![Prometheus Targets](/images/introducing-my-home-lab-in-2022/prometheus_targets.png)
 
+&nbsp;
+
 ダッシュボードにはGrafanaを利用。
 
 ![Grafana Dashboard](/images/introducing-my-home-lab-in-2022/grafana_dashboard.png)
