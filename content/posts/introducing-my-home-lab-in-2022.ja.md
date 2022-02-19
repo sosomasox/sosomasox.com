@@ -12,8 +12,9 @@ DisableComments: false
 
 # はじめに
 
-構成や　変わったので
+2022年になって自宅ラボの構成や稼働しているサービスが変わったので紹介。
 
+久々にブログを書いた。
 
 
 &nbsp;
@@ -37,16 +38,17 @@ DisableComments: false
 こいつが自宅ラボのインターネット接続を担っている。
 自宅ネットワークを用途別に分けたり、本ブログを外部に公開する設定を行っている。
 
+
 #### DNSフォワーディング
 
-LANインタフェースからのDNSクエリは、後述するキャッシュDNSサーバにフォワードするように設定されている。
+LANインタフェースからのDNSクエリは、後述するキャッシュDNSサーバにフォワードするように設定。
 
 
 #### ポートフォワーディング
 
-WANインターフェスpppoe0に来たHTTP/HTTPS宛のパケットは、後述するラズパイKubernetes上で稼働しているNGINX Ingress Controllerにフォワードするように設定されている。
+WANインターフェスのpppoe0に来たHTTP/HTTPS宛のパケットを後述するラズパイKubernetes上で稼働しているNGINX Ingress Controllerにフォワードするように設定。
 
-本ブログは、Kubernetes上で運用しているのでこの設定でブログを外部公開している。
+本ブログはKubernetes上で運用しているため、この設定で外部公開している。
 
 &nbsp;
 
@@ -87,6 +89,7 @@ WANインターフェスpppoe0に来たHTTP/HTTPS宛のパケットは、後述�
 &nbsp;
 
 
+
 ## リバースプロキシサーバ
 
 自宅環境で稼働しているいろいろなサービスのHTTP接続用のリバースプロキシサーバ。
@@ -94,6 +97,7 @@ WANインターフェスpppoe0に来たHTTP/HTTPS宛のパケットは、後述�
 後述するMinIOやGrafana、KibanaなどWeb UIが備わっているサービスに対してWebブラウザからポート指定なしで(80番ポートで)アクセスできるようにプロキシしている。
 
 &nbsp;
+
 
 
 ## MinIO (オブジェクトストレージ)
@@ -107,7 +111,7 @@ WANインターフェスpppoe0に来たHTTP/HTTPS宛のパケットは、後述�
 
 
 
-## メトリクス監視
+## メトリクス監視基盤
 
 EdgeRouterやDNSサーバ、ラズパイKubernetes用のさーばなど、本環境で稼働しているサーバのメトリクス監視を担う。
 
@@ -122,7 +126,7 @@ Prometheus + 各種Exporter で構築。
 &nbsp;
 
 AlertmanagerやPushgatewayも構築済み。
-(アラートルールちゃんと整備してない)
+(アラートルールをちゃんと整備していきたい)
 
 ![Alertmanager Alert](/images/introducing-my-home-lab-in-2022/alertmanager_alert.png)
 
@@ -130,9 +134,11 @@ AlertmanagerやPushgatewayも構築済み。
 
 
 
-## ログ収集
+## ログ収集基盤
 
-Kubernetesで　コンテナのログ
+ラズパイKubernetes で稼働しているコンテナのログ収集のための基盤。
+
+現在は主に、本ブログのアクセスログを収集するために使用。
 
 
 ![Kibana Dashborad](/images/introducing-my-home-lab-in-2022/kibana_dashboard.png)
@@ -155,13 +161,13 @@ Wi-Fiルータは [tp-link Wi-Fiルータ Archer AX73](https://www.tp-link.com/j
 ## ラズパイ Kubernetes
 
 
-USB接続のSSDを使用したRaspberry Pi 4 Model B 8GB に The Hard Way で構築。
+USB接続のSSDを使用したRaspberry Pi 4 Model B 8GB  The Hard Way で構築。
 
 コントロールプレーン3台とノード5台で構成。
 
-Kubernetes のデータストアである etcd は、コントロールプレーンに併設し、etcd クラスタを構成。
+Kubernetesのデータストアであるetcd は、コントロールプレーンに併設し、クラスタを構成。
 
-また、kube-apiserver 用のロードバランサはHAPorxy + Keepalived の冗長構成でコントロールプレーンに併設。
+また、kube-apiserver 用のロードバランサは HAPorxy + Keepalived の冗長構成でコントロールプレーンに併設。
 
 
 ```bash
@@ -180,38 +186,13 @@ node-5.k8s.home.arpa            Ready    node                      7d11h   v1.23
 &nbsp;
 
 
-## MetalLB
+### [MetalLB](https://github.com/metallb/metallb)
 
-ベアメタル環境の Kubernetes において、 
 Service リソースで type: LoadBalaner を使用するために導入。
 
-これにより、Service リソースにIPアドレスが付与され、
-Kubernetes クラスタ外からでも Kubernetes上で稼働しているサービスにアクセスすることができる。
+Service リソースにKubernetesクラスタ外の指定したIPアドレスを付与することができるので、Kubernetes クラスタ外からでもKubernetes上で稼働しているサービスにアクセスすることができる。
 
-L2モードとBGPモードがサポートされているが、
-EdgeRouter X がBGPに対応しているのでBGPモードで稼働。
-
-
-```vim
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: metallb-system
-  name: config
-data:
-  config: |
-    peers:
-    - my-asn: 65002
-      peer-asn: 65001
-      peer-address: 192.168.114.254
-    address-pools:
-    - name: my-ip-space
-      protocol: bgp
-      addresses:
-      - 192.168.115.1-192.168.115.254
-```
-
-&nbsp;
+MetalLBの動作モードはL2モードとBGPモードがあるが、EdgeRouter X がBGPに対応しているのでBGPモードで動作させ、EdgeRouter Xにピアを張っている。
 
 ```bash
 ubnt@edgerouter-x:~$ show ip bgp summary
@@ -239,57 +220,57 @@ Total number of Established sessions 8
 
 &nbsp;
 
-```bash
-ubnt@edgerouter-x:~$ show ip route
-Codes: K - kernel, C - connected, S - static, R - RIP, B - BGP
-       O - OSPF, IA - OSPF inter area
-       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
-       E1 - OSPF external type 1, E2 - OSPF external type 2
-       > - selected route, * - FIB route, p - stale info
 
-IP Route Table for VRF "default"
-K    *> 0.0.0.0/0 [0/0] via pppoe0
-C    *> xxx.xxx.xxx.xxx/32 is directly connected, pppoe0
-C    *> 127.0.0.0/8 is directly connected, lo
-C    *> 192.168.110.0/24 is directly connected, eth0
-C    *> 192.168.111.0/24 is directly connected, eth1
-C    *> 192.168.112.0/24 is directly connected, eth2
-C    *> 192.168.113.0/24 is directly connected, eth3
-C    *> 192.168.114.0/24 is directly connected, eth4
-B    *> 192.168.115.1/32 [20/0] via 192.168.114.18, eth4, 00:56:06
-     *>                  [20/0] via 192.168.114.17, eth4, 00:56:06
-     *>                  [20/0] via 192.168.114.16, eth4, 00:56:06
-     *>                  [20/0] via 192.168.114.15, eth4, 00:56:06
-     *>                  [20/0] via 192.168.114.14, eth4, 00:56:06
-     *>                  [20/0] via 192.168.114.13, eth4, 00:56:06
-     *>                  [20/0] via 192.168.114.12, eth4, 00:56:06
-     *>                  [20/0] via 192.168.114.11, eth4, 00:56:06
-```
+
+### [NGINX Ingreee Controller](https://github.com/kubernetes/ingress-nginx)
+
+Ingressリソースを利用するために導入。
+
+本ブログに対する外部アクセスを制御している。
 
 &nbsp;
 
 
 
-#### ExternalDNS
+### [cert-manger](https://github.com/cert-manager/cert-manager)
 
-IPアドレスで接続　やはりドメイン
+kubernetesクラスタ上でSSL/TLS証明書を扱うために導入。
 
-CoreDNS
+本ブログのドメインに対して、Let's Encryptを利用したSSL証明書の発行を担う。
 
-etcd
+&nbsp;
 
-external-dns
+
+
+### [ExternalDNS](https://github.com/kubernetes-sigs/external-dns)
+
+ServiceリソースやIngressリソースに付与されたKubernetesクラスタ外のIPアドレスにドメインを割り当てるために導入。
+
+CoreDNSを利用してDNSサーバをKubernetes内部に作成し、独自ゾーン"*k8s.*"を管理。
+
+レコードの保存先にはetcdを使用。
+
+キャッシュDNSサーバに対して、ゾーン "*k8s.*" は上述した CoreDNS にフォワードするように設定しているため、自宅ラボ環境にある全ての機器から名前解決が可能。
+
+&nbsp;
+
+
+#### ちょっとしたデモ
+
+nginxコンテナにServiceリソース。
+"test-web.k8s"というドメインを付与。
 
 
 ```vim
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-svc-lb
+  name: test-web-svc-lb
+  namespace: test-web
   labels:
-    app.kubernetes.io/name: nginx-svc-lb
+    app.kubernetes.io/name: test-web-svc-lb
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: nginx.k8s
+    external-dns.alpha.kubernetes.io/hostname: test-web.k8s
 spec:
   type: LoadBalancer
   ports:
@@ -297,58 +278,68 @@ spec:
     port: 80
     targetPort: 80
   selector:
-    app.kubernetes.io/name: nginx
-```
-
-```bash
-$ kubectl get all
-NAME                         READY   STATUS    RESTARTS   AGE
-pod/nginx-795566ddcd-6wxsd   1/1     Running   0          5h35m
-
-NAME                   TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)        AGE
-service/kubernetes     ClusterIP      10.96.0.1     <none>          443/TCP        6d13h
-service/nginx-svc-lb   LoadBalancer   10.96.26.26   192.168.115.2   80:31333/TCP   5h35m
-
-NAME                    READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nginx   1/1     1            1           5h35m
-
-NAME                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/nginx-795566ddcd   1         1         1       5h35m
+    app.kubernetes.io/name: test-web
 ```
 
 &nbsp;
 
-キャッシュDNSサーバに対して、ゾーン "*k8s.*" は上述した CoreDNS にフォワードするように設定している。
-
+上記のServiceリソースにはIPアドレス "192.168.115.6"が割り当てられている。
 
 ```bash
-$ dig nginx.k8s
+$ kubectl -n test-web get all
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/test-web-86cc578bfb-s84gd   1/1     Running   0          14m
 
-; <<>> DiG 9.11.3-1ubuntu1.16-Ubuntu <<>> nginx.k8s
+NAME                      TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+service/test-web-svc-lb   LoadBalancer   10.99.241.173   192.168.115.6   80:32736/TCP   14m
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test-web   1/1     1            1           14m
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/test-web-86cc578bfb   1         1         1       14m
+```
+
+&nbsp;
+
+
+"test-web.k8s"を名前解決してみると割り当てられていたIPアドレス"192.168.115.6"が返ってきている。
+
+```bash
+$ dig test-web.k8s
+
+; <<>> DiG 9.11.3-1ubuntu1.16-Ubuntu <<>> test-web.k8s
 ;; global options: +cmd
 ;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 996
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 20763
 ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
 
 ;; OPT PSEUDOSECTION:
 ; EDNS: version: 0, flags:; udp: 65494
 ;; QUESTION SECTION:
-;nginx.k8s.			IN	A
+;test-web.k8s.			IN	A
 
 ;; ANSWER SECTION:
-nginx.k8s.		30	IN	A	192.168.115.2
+test-web.k8s.		30	IN	A	192.168.115.6
 
-;; Query time: 12 msec
+;; Query time: 15 msec
 ;; SERVER: 127.0.0.53#53(127.0.0.53)
-;; WHEN: Tue Feb 08 07:42:20 JST 2022
-;; MSG SIZE  rcvd: 54
+;; WHEN: Sat Feb 19 18:44:10 JST 2022
+;; MSG SIZE  rcvd: 57
+
 ```
 
 &nbsp;
 
 
 
-#### Longhorn
+### [Longhorn](https://github.com/longhorn/longhorn)
+
+ベアメタルKubernetes環境でPersistentVolumeClaimリソースを利用するために導入。
+
+LonghornはKubernetesネイティブの分散型ブロックストレージ。
+
+Webダッシュボードもあって結構使いやすい。
 
 ![Longhorn Dashboard](/images/introducing-my-home-lab-in-2022/longhorn_dashboard.png)
 
@@ -357,51 +348,53 @@ nginx.k8s.		30	IN	A	192.168.115.2
 
 
 
-#### InfluxDB
+### 自作アプリケーション
 
-監視サーバ Prometheus の長期記憶ストレージ(LTS)として稼働。
-
-```bash
-$ kubectl -n influxdb get all,pvc
-NAME                               READY   STATUS    RESTARTS   AGE
-pod/influxdb-dp-8447dc855d-hd7tt   2/2     Running   0          3d5h
-
-NAME                               TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)          AGE
-service/influxdb-exporter-svc-lb   LoadBalancer   10.100.221.224   192.168.115.8   9122:32042/TCP   3d5h
-service/influxdb-svc-lb            LoadBalancer   10.105.178.235   192.168.115.7   8086:31480/TCP   3d5h
-
-NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/influxdb-dp   1/1     1            1           3d5h
-
-NAME                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/influxdb-dp-8447dc855d   1         1         1       3d5h
-
-NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-persistentvolumeclaim/influxdb-pvc   Bound    pvc-65dfb8bd-40fa-498d-95d5-3e36123be270   128Gi      RWO            longhorn       3d5h
-```
+ラズパイKubernetes上で稼働している自作アプリケーション。
 
 
+#### [sosomasox.com](https://sosomasox.com)
+
+本ブログ。
+
+
+#### [commpost.sosomasox.com](https://commpost.sosomasox.com)
+
+本ブログのコメント投稿システム。
+
+ブログにコメント投稿機能を追加した。
+
+↓ COMMPOSTについて昔書いた記事
+
+- [コメント投稿システム『COMMPOST』の紹介](https://sosomasox.com/posts/commpost-a-comment-posting-system/)
+- [TECHブログのHUGOテーマを拡張してコメント投稿システムである『COMMPOST』を利用できるようにした話](https://sosomasox.com/posts/expanded-the-hugo-theme-on-the-tech-blog-to-enable-the-commpost-which-is-comment-posting-system-to-be-used/)
 
 &nbsp;
 
 
 
-#### sosomasox.com 
+# その他
 
-本ブログもkubernetes上で
+本ブログで使用しているドメイン "sosomasox.com" はさくらのクラウド DNSアプライアンスを利用して管理している。
 
-
+ドメイン "sosomasox.com" のメールサーバはさくらのレンタルサーバを利用しており、さくらのクラウド DNSアプライアンスで管理されているMXレコードをレンタルサーバに向けている。
 
 &nbsp;
 
 
 
-#### commpost.sosomasox.com
+# 今後取り組みたいこと
 
-コメント投稿システム。
+- メトリクス監視基盤のアラート整備
+- ログ収集基盤の充実化
+- (K8sで稼働するなんかしらの)Webアプリの制作 & CI/CD環境の構築
 
-ブログのフッタに
+&nbsp;
 
 
+
+# 最後に
+
+この辺もう少し詳しく聞きたいよってのがあったら、コメント下さい。
 
 &nbsp;
