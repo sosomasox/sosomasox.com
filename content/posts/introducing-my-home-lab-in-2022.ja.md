@@ -4,7 +4,7 @@ date: 2022-02-19T00:00:00+09:00
 Description: ""
 Tags: []
 Categories: []
-thumbnail: /images/introducing-my-home-lab-in-2022/thumbnail.png
+thumbnail: images/introducing-my-home-lab-in-2022/thumbnail.png
 DisableComments: false
 ---
 
