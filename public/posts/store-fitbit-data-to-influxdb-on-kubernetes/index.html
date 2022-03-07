@@ -18,7 +18,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.92.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.93.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -67,8 +67,8 @@
   
   <script
     type="text/javascript"
-    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
-    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
     crossorigin="anonymous"
   ></script>
 
@@ -77,8 +77,8 @@
     
     <script
       type="text/javascript"
-      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
-      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
       crossorigin="anonymous"
     ></script>
 
@@ -334,8 +334,8 @@
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
       defer
@@ -388,358 +388,355 @@ InfluxDBのDockerイメージにはRaspberry Piで動作可能な<a href="https:
 <p>WebAPIエンドポイントに対する認証設定やHTTPS化などは行っておりません。</p>
 <p>早速ですが、Kubernetesマニフェストファイルを下記に示します。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">---
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-nfs-pv</span>
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">volume</span>: <span style="color:#ae81ff">influxdb-nfs-pv</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">capacity</span>:
-    <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">16Gi</span>
-  <span style="color:#f92672">accessModes</span>:
-  - <span style="color:#ae81ff">ReadWriteMany</span>
-  <span style="color:#f92672">nfs</span>:
-    <span style="color:#f92672">server</span>: <span style="color:#ae81ff">192.168.3.241</span>
-    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/srv/nfs/experiment/influxdb</span>
-
----
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-nfs-pvc</span>
-  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">accessModes</span>:
-  - <span style="color:#ae81ff">ReadWriteMany</span>
-  <span style="color:#f92672">resources</span>:
-    <span style="color:#f92672">requests</span>:
-      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">16Gi</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">volume</span>: <span style="color:#ae81ff">influxdb-nfs-pv</span>
-
----
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb</span>
-  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">influxdb</span>
-  <span style="color:#f92672">strategy</span>:
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">Recreate</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">influxdb</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb</span>
-        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">arm32v7/influxdb:1.8.0</span>
-        <span style="color:#f92672">livenessProbe</span>:
-          <span style="color:#f92672">httpGet</span>:
-            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/health</span>
-            <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8086</span>
-            <span style="color:#f92672">scheme</span>: <span style="color:#ae81ff">HTTP</span>
-          <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">15</span>
-          <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">3</span>
-          <span style="color:#f92672">timeoutSeconds</span>: <span style="color:#ae81ff">3</span>
-          <span style="color:#f92672">successThreshold</span>: <span style="color:#ae81ff">1</span>
-          <span style="color:#f92672">failureThreshold</span>: <span style="color:#ae81ff">3</span>
-        <span style="color:#f92672">ports</span>:
-        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8086</span>
-        <span style="color:#f92672">volumeMounts</span>:
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-volume</span>
-          <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/var/lib/influxdb</span>
-      <span style="color:#f92672">volumes</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-volume</span>
-        <span style="color:#f92672">persistentVolumeClaim</span>:
-          <span style="color:#f92672">claimName</span>: <span style="color:#ae81ff">influxdb-nfs-pvc</span>
-
----
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-svc-lb</span>
-  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
-  <span style="color:#f92672">ports</span>:
-  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
-    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8086</span>
-    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8086</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">influxdb</span>
-
----
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-nfs-pv</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volume</span>: <span style="color:#ae81ff">influxdb-nfs-pv</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">capacity</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">16Gi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">accessModes</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">ReadWriteMany</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">nfs</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server</span>: <span style="color:#ae81ff">192.168.3.241</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/srv/nfs/experiment/influxdb</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-nfs-pvc</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">accessModes</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">ReadWriteMany</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">16Gi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">volume</span>: <span style="color:#ae81ff">influxdb-nfs-pv</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">influxdb</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">strategy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">Recreate</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">influxdb</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">arm32v7/influxdb:1.8.0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">livenessProbe</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">httpGet</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">path</span>: <span style="color:#ae81ff">/health</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8086</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">scheme</span>: <span style="color:#ae81ff">HTTP</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">initialDelaySeconds</span>: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">periodSeconds</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">timeoutSeconds</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">successThreshold</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">failureThreshold</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8086</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">volumeMounts</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-volume</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/var/lib/influxdb</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-volume</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">persistentVolumeClaim</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">claimName</span>: <span style="color:#ae81ff">influxdb-nfs-pvc</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">influxdb-svc-lb</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">experiment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">LoadBalancer</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8086</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8086</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">influxdb</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>---
+</span></span></code></pre></div><p> </p>
 <p>InfluxDB用のボリュームポイントとしてPersistentVolumeリソースとPersistentVolumeClaimリソースを作成し、提供しています。</p>
 <p>InfluxDBには<a href="https://docs.influxdata.com/influxdb/v1.8/tools/api/#health-http-endpoint">ヘルスチェックのためのエンドポイント(/health)</a>が用意されています。本環境ではKubernetesのヘルスチェック機能の一つであるLivenessProbeを用いてInfluxDBに対してヘルスチェックを行うようにしました。</p>
 <p>また、InfluxDBにアクセスするためのエンドポイントを提供するために、ロードバランサの払い出しを行っています。</p>
 <p>このマニフェストファイルをKubernetesに適用した結果を下記に示します。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~/workspace/experiment/manifests/influxdb $ kubectl apply -f .
-persistentvolume/influxdb-nfs-pv created
-persistentvolumeclaim/influxdb-nfs-pvc created
-deployment.apps/influxdb created
-service/influxdb-svc-lb created
-pi@makina-gateway:~/workspace/experiment/manifests/influxdb $ kubectl -n experiment get all
-NAME                                         READY   STATUS    RESTARTS   AGE
-pod/alexa-skills-dp-669bc988d7-gjn2b         1/1     Running   <span style="color:#ae81ff">0</span>          6d17h
-pod/fitbit-oauth-dp-6dd8b4b9d-z4xz5          1/1     Running   <span style="color:#ae81ff">0</span>          6d18h
-pod/influxdb-bf655dc8b-c7wl7                 1/1     Running   <span style="color:#ae81ff">0</span>          3m2s
-pod/ngrok-alexa-skills-dp-84c84f6d56-pm6cr   2/2     Running   <span style="color:#ae81ff">0</span>          6d17h
-pod/ngrok-fitbit-oauth-dp-5b9f8dd9b-q6j7z    2/2     Running   <span style="color:#ae81ff">2</span>          6d18h
-
-NAME                                TYPE           CLUSTER-IP       EXTERNAL-IP     PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>          AGE
-service/alexa-skills-svc-lb         LoadBalancer   10.105.183.248   192.168.3.223   8080:30475/TCP   6d17h
-service/fitbit-oauth-svc-lb         LoadBalancer   10.98.184.226    192.168.3.222   8080:31697/TCP   6d18h
-service/influxdb-svc-lb             LoadBalancer   10.98.198.103    192.168.3.226   8086:32192/TCP   3m2s
-service/ngrok-alexa-skills-svc-lb   LoadBalancer   10.103.140.123   192.168.3.225   4039:30877/TCP   6d17h
-service/ngrok-fitbit-oauth-svc-lb   LoadBalancer   10.105.225.110   192.168.3.224   4039:31057/TCP   6d18h
-
-NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/alexa-skills-dp         1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d17h
-deployment.apps/fitbit-oauth-dp         1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d18h
-deployment.apps/influxdb                1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           3m3s
-deployment.apps/ngrok-alexa-skills-dp   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d17h
-deployment.apps/ngrok-fitbit-oauth-dp   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d18h
-
-NAME                                               DESIRED   CURRENT   READY   AGE
-replicaset.apps/alexa-skills-dp-669bc988d7         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d17h
-replicaset.apps/fitbit-oauth-dp-6dd8b4b9d          <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d18h
-replicaset.apps/influxdb-bf655dc8b                 <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       3m3s
-replicaset.apps/ngrok-alexa-skills-dp-84c84f6d56   <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d17h
-replicaset.apps/ngrok-fitbit-oauth-dp-5b9f8dd9b    <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d18h
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pi@makina-gateway:~/workspace/experiment/manifests/influxdb $ kubectl apply -f .
+</span></span><span style="display:flex;"><span>persistentvolume/influxdb-nfs-pv created
+</span></span><span style="display:flex;"><span>persistentvolumeclaim/influxdb-nfs-pvc created
+</span></span><span style="display:flex;"><span>deployment.apps/influxdb created
+</span></span><span style="display:flex;"><span>service/influxdb-svc-lb created
+</span></span><span style="display:flex;"><span>pi@makina-gateway:~/workspace/experiment/manifests/influxdb $ kubectl -n experiment get all
+</span></span><span style="display:flex;"><span>NAME                                         READY   STATUS    RESTARTS   AGE
+</span></span><span style="display:flex;"><span>pod/alexa-skills-dp-669bc988d7-gjn2b         1/1     Running   <span style="color:#ae81ff">0</span>          6d17h
+</span></span><span style="display:flex;"><span>pod/fitbit-oauth-dp-6dd8b4b9d-z4xz5          1/1     Running   <span style="color:#ae81ff">0</span>          6d18h
+</span></span><span style="display:flex;"><span>pod/influxdb-bf655dc8b-c7wl7                 1/1     Running   <span style="color:#ae81ff">0</span>          3m2s
+</span></span><span style="display:flex;"><span>pod/ngrok-alexa-skills-dp-84c84f6d56-pm6cr   2/2     Running   <span style="color:#ae81ff">0</span>          6d17h
+</span></span><span style="display:flex;"><span>pod/ngrok-fitbit-oauth-dp-5b9f8dd9b-q6j7z    2/2     Running   <span style="color:#ae81ff">2</span>          6d18h
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NAME                                TYPE           CLUSTER-IP       EXTERNAL-IP     PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>          AGE
+</span></span><span style="display:flex;"><span>service/alexa-skills-svc-lb         LoadBalancer   10.105.183.248   192.168.3.223   8080:30475/TCP   6d17h
+</span></span><span style="display:flex;"><span>service/fitbit-oauth-svc-lb         LoadBalancer   10.98.184.226    192.168.3.222   8080:31697/TCP   6d18h
+</span></span><span style="display:flex;"><span>service/influxdb-svc-lb             LoadBalancer   10.98.198.103    192.168.3.226   8086:32192/TCP   3m2s
+</span></span><span style="display:flex;"><span>service/ngrok-alexa-skills-svc-lb   LoadBalancer   10.103.140.123   192.168.3.225   4039:30877/TCP   6d17h
+</span></span><span style="display:flex;"><span>service/ngrok-fitbit-oauth-svc-lb   LoadBalancer   10.105.225.110   192.168.3.224   4039:31057/TCP   6d18h
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span style="display:flex;"><span>deployment.apps/alexa-skills-dp         1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d17h
+</span></span><span style="display:flex;"><span>deployment.apps/fitbit-oauth-dp         1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d18h
+</span></span><span style="display:flex;"><span>deployment.apps/influxdb                1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           3m3s
+</span></span><span style="display:flex;"><span>deployment.apps/ngrok-alexa-skills-dp   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d17h
+</span></span><span style="display:flex;"><span>deployment.apps/ngrok-fitbit-oauth-dp   1/1     <span style="color:#ae81ff">1</span>            <span style="color:#ae81ff">1</span>           6d18h
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>NAME                                               DESIRED   CURRENT   READY   AGE
+</span></span><span style="display:flex;"><span>replicaset.apps/alexa-skills-dp-669bc988d7         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d17h
+</span></span><span style="display:flex;"><span>replicaset.apps/fitbit-oauth-dp-6dd8b4b9d          <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d18h
+</span></span><span style="display:flex;"><span>replicaset.apps/influxdb-bf655dc8b                 <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       3m3s
+</span></span><span style="display:flex;"><span>replicaset.apps/ngrok-alexa-skills-dp-84c84f6d56   <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d17h
+</span></span><span style="display:flex;"><span>replicaset.apps/ngrok-fitbit-oauth-dp-5b9f8dd9b    <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">1</span>       6d18h
+</span></span></code></pre></div><p> </p>
 <p>Kubernetesのヘルスチェック機能であるLivenessProbeが動作していることを確認してみます。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ kubectl -n experiment logs --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> pod/influxdb-bf655dc8b-c7wl7 
-<span style="color:#f92672">[</span>httpd<span style="color:#f92672">]</span> 10.244.7.1 - - <span style="color:#f92672">[</span>26/Jun/2020:12:11:21 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /health HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">106</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;kube-probe/1.13&#34;</span> 2615250d-b7a6-11ea-82c0-8a2dcd57b427 <span style="color:#ae81ff">166</span>
-<span style="color:#f92672">[</span>httpd<span style="color:#f92672">]</span> 10.244.7.1 - - <span style="color:#f92672">[</span>26/Jun/2020:12:11:24 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /health HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">106</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;kube-probe/1.13&#34;</span> 27deeb19-b7a6-11ea-82c1-8a2dcd57b427 <span style="color:#ae81ff">214</span>
-<span style="color:#f92672">[</span>httpd<span style="color:#f92672">]</span> 10.244.7.1 - - <span style="color:#f92672">[</span>26/Jun/2020:12:11:27 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /health HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">106</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;kube-probe/1.13&#34;</span> 29a8a504-b7a6-11ea-82c2-8a2dcd57b427 <span style="color:#ae81ff">165</span>
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pi@makina-gateway:~ $ kubectl -n experiment logs --tail<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> pod/influxdb-bf655dc8b-c7wl7 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>httpd<span style="color:#f92672">]</span> 10.244.7.1 - - <span style="color:#f92672">[</span>26/Jun/2020:12:11:21 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /health HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">106</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;kube-probe/1.13&#34;</span> 2615250d-b7a6-11ea-82c0-8a2dcd57b427 <span style="color:#ae81ff">166</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>httpd<span style="color:#f92672">]</span> 10.244.7.1 - - <span style="color:#f92672">[</span>26/Jun/2020:12:11:24 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /health HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">106</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;kube-probe/1.13&#34;</span> 27deeb19-b7a6-11ea-82c1-8a2dcd57b427 <span style="color:#ae81ff">214</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>httpd<span style="color:#f92672">]</span> 10.244.7.1 - - <span style="color:#f92672">[</span>26/Jun/2020:12:11:27 +0000<span style="color:#f92672">]</span> <span style="color:#e6db74">&#34;GET /health HTTP/1.1&#34;</span> <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">106</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#e6db74">&#34;kube-probe/1.13&#34;</span> 29a8a504-b7a6-11ea-82c2-8a2dcd57b427 <span style="color:#ae81ff">165</span>
+</span></span></code></pre></div><p> </p>
 <p>InfluxDBにはインスタンスの状態ととバーションを確認するためのエンドポイントとして<a href="https://docs.influxdata.com/influxdb/v1.8/tools/api/#ping-http-endpoint">/ping</a>エンドポイントが用意されています。
 Kubernetes上にデプロイしたInfluxDBに対して稼働しているかこのエンドポイントを用いて確認してみます。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ curl -sl -I http://192.168.3.226:8086/ping?verbose<span style="color:#f92672">=</span>true
-HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-Content-Type: application/json
-Request-Id: ac114c50-b7a2-11ea-80c0-8a2dcd57b427
-X-Influxdb-Build: OSS
-X-Influxdb-Version: 1.8.0
-X-Request-Id: ac114c50-b7a2-11ea-80c0-8a2dcd57b427
-Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 11:46:28 GMT
-Content-Length: <span style="color:#ae81ff">19</span>
-
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -sl -I http://192.168.3.226:8086/ping?verbose<span style="color:#f92672">=</span>true
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Request-Id: ac114c50-b7a2-11ea-80c0-8a2dcd57b427
+</span></span><span style="display:flex;"><span>X-Influxdb-Build: OSS
+</span></span><span style="display:flex;"><span>X-Influxdb-Version: 1.8.0
+</span></span><span style="display:flex;"><span>X-Request-Id: ac114c50-b7a2-11ea-80c0-8a2dcd57b427
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 11:46:28 GMT
+</span></span><span style="display:flex;"><span>Content-Length: <span style="color:#ae81ff">19</span>
+</span></span></code></pre></div><p> </p>
 <p>レスポンスが返ってきており、ちゃんと稼働していることが確認できました。</p>
 <p>次に、データベースを作成して、データを保存してみます。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ curl -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/query&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=CREATE DATABASE &#34;mydb&#34;&#39;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;results&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;statement_id&#34;</span>:0<span style="color:#f92672">}]}</span>
-pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/write?db=mydb&#39;</span> --data-binary <span style="color:#e6db74">&#39;cpu_load_short,host=server01,region=us-west value=0.64 1434055562000000000&#39;</span>
-HTTP/1.1 <span style="color:#ae81ff">204</span> No Content
-Content-Type: application/json
-Request-Id: 4e2d1992-b7a4-11ea-81b4-8a2dcd57b427
-X-Influxdb-Build: OSS
-X-Influxdb-Version: 1.8.0
-X-Request-Id: 4e2d1992-b7a4-11ea-81b4-8a2dcd57b427
-Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 11:58:10 GMT
-
-pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/write?db=mydb&#39;</span> --data-binary <span style="color:#e6db74">&#39;cpu_load_short,host=server01,region=us-west value=0.74 1434055622000000000&#39;</span>
-HTTP/1.1 <span style="color:#ae81ff">204</span> No Content
-Content-Type: application/json
-Request-Id: afe181f0-b7a4-11ea-81eb-8a2dcd57b427
-X-Influxdb-Build: OSS
-X-Influxdb-Version: 1.8.0
-X-Request-Id: afe181f0-b7a4-11ea-81eb-8a2dcd57b427
-Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 12:00:54 GMT
-
-pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/write?db=mydb&#39;</span> --data-binary <span style="color:#e6db74">&#39;cpu_load_short,host=server01,region=us-west value=0.84 1434055682000000000&#39;</span>
-HTTP/1.1 <span style="color:#ae81ff">204</span> No Content
-Content-Type: application/json
-Request-Id: bdbdc90b-b7a4-11ea-81f4-8a2dcd57b427
-X-Influxdb-Build: OSS
-X-Influxdb-Version: 1.8.0
-X-Request-Id: bdbdc90b-b7a4-11ea-81f4-8a2dcd57b427
-Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 12:01:17 GMT
-
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/query&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=CREATE DATABASE &#34;mydb&#34;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;results&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;statement_id&#34;</span>:0<span style="color:#f92672">}]}</span>
+</span></span><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/write?db=mydb&#39;</span> --data-binary <span style="color:#e6db74">&#39;cpu_load_short,host=server01,region=us-west value=0.64 1434055562000000000&#39;</span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">204</span> No Content
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Request-Id: 4e2d1992-b7a4-11ea-81b4-8a2dcd57b427
+</span></span><span style="display:flex;"><span>X-Influxdb-Build: OSS
+</span></span><span style="display:flex;"><span>X-Influxdb-Version: 1.8.0
+</span></span><span style="display:flex;"><span>X-Request-Id: 4e2d1992-b7a4-11ea-81b4-8a2dcd57b427
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 11:58:10 GMT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/write?db=mydb&#39;</span> --data-binary <span style="color:#e6db74">&#39;cpu_load_short,host=server01,region=us-west value=0.74 1434055622000000000&#39;</span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">204</span> No Content
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Request-Id: afe181f0-b7a4-11ea-81eb-8a2dcd57b427
+</span></span><span style="display:flex;"><span>X-Influxdb-Build: OSS
+</span></span><span style="display:flex;"><span>X-Influxdb-Version: 1.8.0
+</span></span><span style="display:flex;"><span>X-Request-Id: afe181f0-b7a4-11ea-81eb-8a2dcd57b427
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 12:00:54 GMT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/write?db=mydb&#39;</span> --data-binary <span style="color:#e6db74">&#39;cpu_load_short,host=server01,region=us-west value=0.84 1434055682000000000&#39;</span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">204</span> No Content
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Request-Id: bdbdc90b-b7a4-11ea-81f4-8a2dcd57b427
+</span></span><span style="display:flex;"><span>X-Influxdb-Build: OSS
+</span></span><span style="display:flex;"><span>X-Influxdb-Version: 1.8.0
+</span></span><span style="display:flex;"><span>X-Request-Id: bdbdc90b-b7a4-11ea-81f4-8a2dcd57b427
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 12:01:17 GMT
+</span></span></code></pre></div><p> </p>
 <p>データが保存されていることを確認してみます。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/query?db=mydb&amp;pretty=true&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=SELECT * FROM &#34;cpu_load_short&#34;&#39;</span>
-HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-Content-Type: application/json
-Request-Id: fe7996fd-b7a4-11ea-821a-8a2dcd57b427
-X-Influxdb-Build: OSS
-X-Influxdb-Version: 1.8.0
-X-Request-Id: fe7996fd-b7a4-11ea-821a-8a2dcd57b427
-Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 12:03:06 GMT
-Transfer-Encoding: chunked
-
-<span style="color:#f92672">{</span>
-    <span style="color:#e6db74">&#34;results&#34;</span>: <span style="color:#f92672">[</span>
-        <span style="color:#f92672">{</span>
-            <span style="color:#e6db74">&#34;statement_id&#34;</span>: 0,
-            <span style="color:#e6db74">&#34;series&#34;</span>: <span style="color:#f92672">[</span>
-                <span style="color:#f92672">{</span>
-                    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;cpu_load_short&#34;</span>,
-                    <span style="color:#e6db74">&#34;columns&#34;</span>: <span style="color:#f92672">[</span>
-                        <span style="color:#e6db74">&#34;time&#34;</span>,
-                        <span style="color:#e6db74">&#34;host&#34;</span>,
-                        <span style="color:#e6db74">&#34;region&#34;</span>,
-                        <span style="color:#e6db74">&#34;value&#34;</span>
-                    <span style="color:#f92672">]</span>,
-                    <span style="color:#e6db74">&#34;values&#34;</span>: <span style="color:#f92672">[</span>
-                        <span style="color:#f92672">[</span>
-                            <span style="color:#e6db74">&#34;2015-06-11T20:46:02Z&#34;</span>,
-                            <span style="color:#e6db74">&#34;server01&#34;</span>,
-                            <span style="color:#e6db74">&#34;us-west&#34;</span>,
-                            0.64
-                        <span style="color:#f92672">]</span>,
-                        <span style="color:#f92672">[</span>
-                            <span style="color:#e6db74">&#34;2015-06-11T20:47:02Z&#34;</span>,
-                            <span style="color:#e6db74">&#34;server01&#34;</span>,
-                            <span style="color:#e6db74">&#34;us-west&#34;</span>,
-                            0.74
-                        <span style="color:#f92672">]</span>,
-                        <span style="color:#f92672">[</span>
-                            <span style="color:#e6db74">&#34;2015-06-11T20:48:02Z&#34;</span>,
-                            <span style="color:#e6db74">&#34;server01&#34;</span>,
-                            <span style="color:#e6db74">&#34;us-west&#34;</span>,
-                            0.84
-                        <span style="color:#f92672">]</span>
-                    <span style="color:#f92672">]</span>
-                <span style="color:#f92672">}</span>
-            <span style="color:#f92672">]</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">]</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/query?db=mydb&amp;pretty=true&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=SELECT * FROM &#34;cpu_load_short&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Request-Id: fe7996fd-b7a4-11ea-821a-8a2dcd57b427
+</span></span><span style="display:flex;"><span>X-Influxdb-Build: OSS
+</span></span><span style="display:flex;"><span>X-Influxdb-Version: 1.8.0
+</span></span><span style="display:flex;"><span>X-Request-Id: fe7996fd-b7a4-11ea-821a-8a2dcd57b427
+</span></span><span style="display:flex;"><span>Date: Fri, <span style="color:#ae81ff">26</span> Jun <span style="color:#ae81ff">2020</span> 12:03:06 GMT
+</span></span><span style="display:flex;"><span>Transfer-Encoding: chunked
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;results&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;statement_id&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;series&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;cpu_load_short&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;columns&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;time&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;host&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;region&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;value&#34;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;values&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;2015-06-11T20:46:02Z&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;server01&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;us-west&#34;</span>,
+</span></span><span style="display:flex;"><span>                            0.64
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;2015-06-11T20:47:02Z&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;server01&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;us-west&#34;</span>,
+</span></span><span style="display:flex;"><span>                            0.74
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;2015-06-11T20:48:02Z&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;server01&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;us-west&#34;</span>,
+</span></span><span style="display:flex;"><span>                            0.84
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p> </p>
 <p>Kubernetes上でInfluxDBが正常に稼働していることが確認できました。</p>
 <p> </p>
 <h3 id="fitbitのデータをinfluxdbに保存する">FitbitのデータをInfluxDBに保存する</h3>
 <p>それではFitbitのデータをInfluxDBに保存していきます。</p>
 <p>まず、あらかじめ下記のコマンドを実行してInfluxDB上にデータベースを作成します。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ curl -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/query&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=CREATE DATABASE &#34;fitbit&#34;&#39;</span>
-<span style="color:#f92672">{</span><span style="color:#e6db74">&#34;results&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;statement_id&#34;</span>:0<span style="color:#f92672">}]}</span>
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -XPOST <span style="color:#e6db74">&#39;http://192.168.3.226:8086/query&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=CREATE DATABASE &#34;fitbit&#34;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span><span style="color:#e6db74">&#34;results&#34;</span>:<span style="color:#f92672">[{</span><span style="color:#e6db74">&#34;statement_id&#34;</span>:0<span style="color:#f92672">}]}</span>
+</span></span></code></pre></div><p> </p>
 <p>Fitbit APIを利用してFitbitデータの取得行い、取得したデータをInfluxDBに保存するためのプログラムを下記に示します。</p>
 <p>プログラム上でFitbitのAPIを利用するため、認証に必要なアクセストークンなどは事前に用意ました。
 また、Pythonパッケージに<a href="https://pypi.org/project/fitbit/"><em>fitbit</em></a>と<a href="https://pypi.org/project/influxdb/"><em>influxdb</em></a>を利用しています。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-:store_fitbit_data_to_influxdb.py" data-lang=":store_fitbit_data_to_influxdb.py"><span style="color:#75715e">#!/usr/env/bin python3</span>
-
-<span style="color:#f92672">import</span> ast
-<span style="color:#f92672">import</span> datetime
-<span style="color:#f92672">import</span> fitbit
-<span style="color:#f92672">from</span> influxdb <span style="color:#f92672">import</span> InfluxDBClient
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">update_token</span>(token):
-    f <span style="color:#f92672">=</span> open(TOKEN_FILE, <span style="color:#e6db74">&#39;w&#39;</span>)
-    f<span style="color:#f92672">.</span>write(str(token))
-    f<span style="color:#f92672">.</span>close()
-
-CLIENT_ID     <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;XXXXXX&#34;</span>
-CLIENT_SECRET <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY&#34;</span>
-TOKEN_FILE    <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;token.txt&#34;</span>
-
-token <span style="color:#f92672">=</span> open(TOKEN_FILE)<span style="color:#f92672">.</span>read()
-token_dict <span style="color:#f92672">=</span> ast<span style="color:#f92672">.</span>literal_eval(token)
-ACCESS_TOKEN <span style="color:#f92672">=</span> token_dict[<span style="color:#e6db74">&#39;access_token&#39;</span>]
-REFRESH_TOKEN <span style="color:#f92672">=</span> token_dict[<span style="color:#e6db74">&#39;refresh_token&#39;</span>]
-
-client_fitbit <span style="color:#f92672">=</span> fitbit<span style="color:#f92672">.</span>Fitbit(client_id<span style="color:#f92672">=</span>CLIENT_ID, 
-                              client_secret<span style="color:#f92672">=</span>CLIENT_SECRET,
-                              access_token<span style="color:#f92672">=</span>ACCESS_TOKEN, 
-                              refresh_token<span style="color:#f92672">=</span>REFRESH_TOKEN, 
-                              refresh_cb<span style="color:#f92672">=</span>update_token)
-
-today_datetime  <span style="color:#f92672">=</span> datetime<span style="color:#f92672">.</span>date<span style="color:#f92672">.</span>today() <span style="color:#f92672">-</span> datetime<span style="color:#f92672">.</span>timedelta(days<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
-
-_data  <span style="color:#f92672">=</span> client_fitbit<span style="color:#f92672">.</span>intraday_time_series(<span style="color:#e6db74">&#39;activities/heart&#39;</span>, 
-                                            today_datetime, 
-                                            detail_level<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1sec&#39;</span>)
-
-heartrate_lst <span style="color:#f92672">=</span> _data[<span style="color:#e6db74">&#34;activities-heart-intraday&#34;</span>][<span style="color:#e6db74">&#34;dataset&#34;</span>]
-
-client_influxdb <span style="color:#f92672">=</span> InfluxDBClient(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;192.168.3.226&#39;</span>, port<span style="color:#f92672">=</span><span style="color:#ae81ff">8086</span>, database<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;fitbit&#39;</span>)
-
-<span style="color:#66d9ef">for</span> heartrate <span style="color:#f92672">in</span> heartrate_lst:
-    date_str <span style="color:#f92672">=</span> today_datetime<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#39;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; &#34;</span> <span style="color:#f92672">+</span> str(heartrate[<span style="color:#e6db74">&#39;time&#39;</span>])
-    date_datetime <span style="color:#f92672">=</span> datetime<span style="color:#f92672">.</span>datetime<span style="color:#f92672">.</span>strptime(date_str, <span style="color:#e6db74">&#39;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74"> %H:%M:%S&#39;</span>)
-
-    _data <span style="color:#f92672">=</span> [
-            {
-                <span style="color:#e6db74">&#34;measurement&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
-                <span style="color:#e6db74">&#34;time&#34;</span>: date_datetime,
-                <span style="color:#e6db74">&#34;fields&#34;</span>: {
-                    <span style="color:#e6db74">&#34;heart_rate&#34;</span>: heartrate[<span style="color:#e6db74">&#39;value&#39;</span>]
-                    }
-                }
-            ]
-
-    <span style="color:#66d9ef">try</span>:
-        result <span style="color:#f92672">=</span> client_influxdb<span style="color:#f92672">.</span>write_points(_data)
-        print(_data, result)
-
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> result:
-            exit(<span style="color:#ae81ff">1</span>)
-
-    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
-            exit(<span style="color:#ae81ff">1</span>)
-
-exit(<span style="color:#ae81ff">0</span>)
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-:store_fitbit_data_to_influxdb.py" data-lang=":store_fitbit_data_to_influxdb.py"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/env/bin python3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> ast
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> datetime
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> fitbit
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> influxdb <span style="color:#f92672">import</span> InfluxDBClient
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">update_token</span>(token):
+</span></span><span style="display:flex;"><span>    f <span style="color:#f92672">=</span> open(TOKEN_FILE, <span style="color:#e6db74">&#39;w&#39;</span>)
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>write(str(token))
+</span></span><span style="display:flex;"><span>    f<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CLIENT_ID     <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;XXXXXX&#34;</span>
+</span></span><span style="display:flex;"><span>CLIENT_SECRET <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY&#34;</span>
+</span></span><span style="display:flex;"><span>TOKEN_FILE    <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;token.txt&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>token <span style="color:#f92672">=</span> open(TOKEN_FILE)<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>token_dict <span style="color:#f92672">=</span> ast<span style="color:#f92672">.</span>literal_eval(token)
+</span></span><span style="display:flex;"><span>ACCESS_TOKEN <span style="color:#f92672">=</span> token_dict[<span style="color:#e6db74">&#39;access_token&#39;</span>]
+</span></span><span style="display:flex;"><span>REFRESH_TOKEN <span style="color:#f92672">=</span> token_dict[<span style="color:#e6db74">&#39;refresh_token&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client_fitbit <span style="color:#f92672">=</span> fitbit<span style="color:#f92672">.</span>Fitbit(client_id<span style="color:#f92672">=</span>CLIENT_ID, 
+</span></span><span style="display:flex;"><span>                              client_secret<span style="color:#f92672">=</span>CLIENT_SECRET,
+</span></span><span style="display:flex;"><span>                              access_token<span style="color:#f92672">=</span>ACCESS_TOKEN, 
+</span></span><span style="display:flex;"><span>                              refresh_token<span style="color:#f92672">=</span>REFRESH_TOKEN, 
+</span></span><span style="display:flex;"><span>                              refresh_cb<span style="color:#f92672">=</span>update_token)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>today_datetime  <span style="color:#f92672">=</span> datetime<span style="color:#f92672">.</span>date<span style="color:#f92672">.</span>today() <span style="color:#f92672">-</span> datetime<span style="color:#f92672">.</span>timedelta(days<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_data  <span style="color:#f92672">=</span> client_fitbit<span style="color:#f92672">.</span>intraday_time_series(<span style="color:#e6db74">&#39;activities/heart&#39;</span>, 
+</span></span><span style="display:flex;"><span>                                            today_datetime, 
+</span></span><span style="display:flex;"><span>                                            detail_level<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1sec&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>heartrate_lst <span style="color:#f92672">=</span> _data[<span style="color:#e6db74">&#34;activities-heart-intraday&#34;</span>][<span style="color:#e6db74">&#34;dataset&#34;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client_influxdb <span style="color:#f92672">=</span> InfluxDBClient(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;192.168.3.226&#39;</span>, port<span style="color:#f92672">=</span><span style="color:#ae81ff">8086</span>, database<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;fitbit&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> heartrate <span style="color:#f92672">in</span> heartrate_lst:
+</span></span><span style="display:flex;"><span>    date_str <span style="color:#f92672">=</span> today_datetime<span style="color:#f92672">.</span>strftime(<span style="color:#e6db74">&#39;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74">&#39;</span>) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; &#34;</span> <span style="color:#f92672">+</span> str(heartrate[<span style="color:#e6db74">&#39;time&#39;</span>])
+</span></span><span style="display:flex;"><span>    date_datetime <span style="color:#f92672">=</span> datetime<span style="color:#f92672">.</span>datetime<span style="color:#f92672">.</span>strptime(date_str, <span style="color:#e6db74">&#39;%Y-%m-</span><span style="color:#e6db74">%d</span><span style="color:#e6db74"> %H:%M:%S&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    _data <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;measurement&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;time&#34;</span>: date_datetime,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;fields&#34;</span>: {
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;heart_rate&#34;</span>: heartrate[<span style="color:#e6db74">&#39;value&#39;</span>]
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> client_influxdb<span style="color:#f92672">.</span>write_points(_data)
+</span></span><span style="display:flex;"><span>        print(_data, result)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> result:
+</span></span><span style="display:flex;"><span>            exit(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span>:
+</span></span><span style="display:flex;"><span>            exit(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>exit(<span style="color:#ae81ff">0</span>)
+</span></span></code></pre></div><p> </p>
 <p>上記のプログラム実行後、FitbitデータがInfluxDBに保存されているか確認します。</p>
 <p> </p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.224:8086/query?db=fitbit&amp;pretty=true&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=SELECT * FROM &#34;test&#34;&#39;</span>
-HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-Content-Type: application/json
-Request-Id: cb767efd-b850-11ea-9885-aa7a00487a86
-X-Influxdb-Build: OSS
-X-Influxdb-Version: 1.8.0
-X-Request-Id: cb767efd-b850-11ea-9885-aa7a00487a86
-Date: Sat, <span style="color:#ae81ff">27</span> Jun <span style="color:#ae81ff">2020</span> 08:32:53 GMT
-Transfer-Encoding: chunked
-
-<span style="color:#f92672">{</span>
-    <span style="color:#e6db74">&#34;results&#34;</span>: <span style="color:#f92672">[</span>
-        <span style="color:#f92672">{</span>
-            <span style="color:#e6db74">&#34;statement_id&#34;</span>: 0,
-            <span style="color:#e6db74">&#34;series&#34;</span>: <span style="color:#f92672">[</span>
-                <span style="color:#f92672">{</span>
-                    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
-                    <span style="color:#e6db74">&#34;columns&#34;</span>: <span style="color:#f92672">[</span>
-                        <span style="color:#e6db74">&#34;time&#34;</span>,
-                        <span style="color:#e6db74">&#34;heart_rate&#34;</span>
-                    <span style="color:#f92672">]</span>,
-                    <span style="color:#e6db74">&#34;values&#34;</span>: <span style="color:#f92672">[</span>
-                        <span style="color:#f92672">[</span>
-                            <span style="color:#e6db74">&#34;2020-06-27T00:00:01Z&#34;</span>,
-                            <span style="color:#ae81ff">79</span>
-                        <span style="color:#f92672">]</span>,
-                        <span style="color:#f92672">[</span>
-                            <span style="color:#e6db74">&#34;2020-06-27T00:00:11Z&#34;</span>,
-                            <span style="color:#ae81ff">77</span>
-                        <span style="color:#f92672">]</span>,
-                        <span style="color:#f92672">[</span>
-                            <span style="color:#e6db74">&#34;2020-06-27T00:00:21Z&#34;</span>,
-                            <span style="color:#ae81ff">76</span>
-                        <span style="color:#f92672">]</span>,
-
-</code></pre></div><p> </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pi@makina-gateway:~ $ curl -i -XPOST <span style="color:#e6db74">&#39;http://192.168.3.224:8086/query?db=fitbit&amp;pretty=true&#39;</span> --data-urlencode <span style="color:#e6db74">&#39;q=SELECT * FROM &#34;test&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>Content-Type: application/json
+</span></span><span style="display:flex;"><span>Request-Id: cb767efd-b850-11ea-9885-aa7a00487a86
+</span></span><span style="display:flex;"><span>X-Influxdb-Build: OSS
+</span></span><span style="display:flex;"><span>X-Influxdb-Version: 1.8.0
+</span></span><span style="display:flex;"><span>X-Request-Id: cb767efd-b850-11ea-9885-aa7a00487a86
+</span></span><span style="display:flex;"><span>Date: Sat, <span style="color:#ae81ff">27</span> Jun <span style="color:#ae81ff">2020</span> 08:32:53 GMT
+</span></span><span style="display:flex;"><span>Transfer-Encoding: chunked
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;results&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;statement_id&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;series&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;columns&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;time&#34;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;heart_rate&#34;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;values&#34;</span>: <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;2020-06-27T00:00:01Z&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#ae81ff">79</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;2020-06-27T00:00:11Z&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#ae81ff">77</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">[</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;2020-06-27T00:00:21Z&#34;</span>,
+</span></span><span style="display:flex;"><span>                            <span style="color:#ae81ff">76</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">]</span>,
+</span></span></code></pre></div><p> </p>
 <p>上記に示した結果より、InfluxDBにFitbitデータが保存されていることが確認できました。</p>
 <p> </p>
 <h3 id="まとめ">まとめ</h3>
@@ -810,8 +807,8 @@ Transfer-Encoding: chunked
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
       defer

@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html
+  dir="ltr"
+  lang="ja"
+  data-theme=""
+><head>
+  <title>
+    
+      sosomasox
+        |
+        ラズパイKubernetesにKubeVirtを導入してみる
+
+
+      
+
+
+    
+  </title>
+
+  
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.93.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta
+    name="description"
+    content="
+      
+
+
+    "
+  />
+  
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/main.min.24f9f28bfaca2cdc5a222bb5e42d30c701d7ffb0b31d30dfc4afc0e044dfbf24.css"
+    integrity="sha256-JPnyi/rKLNxaIiu15C0wxwHX/7CzHTDfxK/A4ETfvyQ="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  
+  <link
+    rel="stylesheet"
+    href="/css/markupHighlight.min.058b31f17db60602cc415fd63b0427e7932fbf35c70d8e341a4c39385f5f6f3e.css"
+    integrity="sha256-BYsx8X22BgLMQV/WOwQn55MvvzXHDY40Gkw5OF9fbz4="
+    crossorigin="anonymous"
+    type="text/css"
+  />
+  
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    crossorigin="anonymous"
+  />
+  
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+
+  <link rel="canonical" href="https://sosomasox.com/posts/running-kubevirt-on-raspi-kubernetes/" />
+
+  
+  
+  
+  
+  <script
+    type="text/javascript"
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
+    crossorigin="anonymous"
+  ></script>
+
+  
+    
+    
+    <script
+      type="text/javascript"
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
+      crossorigin="anonymous"
+    ></script>
+
+  
+
+  
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ラズパイKubernetesにKubeVirtを導入してみる"/>
+<meta name="twitter:description" content="ラズパイk8sでKubeVirt使ってみたいなと思い、導入してみた。 動作環境 Harvesterに習って、Kubernetes &#43; Longhorn &#43; MinIO の環境を"/>
+
+
+
+  
+
+
+  
+  
+  
+  
+  <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "articleSection": "posts",
+        "name": "ラズパイKubernetesにKubeVirtを導入してみる",
+        "headline": "ラズパイKubernetesにKubeVirtを導入してみる",
+        "alternativeHeadline": "",
+        "description": "
+      
+        ラズパイk8sでKubeVirt使ってみたいなと思い、導入してみた。 動作環境 Harvesterに習って、Kubernetes \u002b Longhorn \u002b MinIO の環境を
+
+
+      
+
+
+    ",
+        "inLanguage": "ja",
+        "isFamilyFriendly": "true",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/sosomasox.com\/posts\/running-kubevirt-on-raspi-kubernetes\/"
+        },
+        "author" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "creator" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "accountablePerson" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "copyrightHolder" : {
+            "@type": "Person",
+            "name": "sosomasox"
+        },
+        "copyrightYear" : "2022",
+        "dateCreated": "2022-03-07T18:17:34.00Z",
+        "datePublished": "2022-03-07T18:17:34.00Z",
+        "dateModified": "2022-03-07T18:17:34.00Z",
+        "publisher":{
+            "@type":"Organization",
+            "name": "sosomasox",
+            "url": "https://sosomasox.com/",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/sosomasox.com\/favicon-32x32.png",
+                "width":"32",
+                "height":"32"
+            }
+        },
+        "image": 
+      [
+      ]
+
+    ,
+        "url" : "https:\/\/sosomasox.com\/posts\/running-kubevirt-on-raspi-kubernetes\/",
+        "wordCount" : "2248",
+        "genre" : [ ],
+        "keywords" : [ ]
+    }
+  </script>
+
+
+
+</head>
+<body>
+    <header><div
+  class="page-top 
+    animated fadeInDown
+
+  "
+>
+  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </a>
+  <nav>
+    <ul class="nav__list" id="navMenu">
+      <div class="nav__links">
+        
+        
+          
+          <li>
+            <a
+              
+              href="/"
+              
+              title=""
+              >Home</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/posts/"
+              
+              title=""
+              >Posts</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/portfolio/"
+              
+              title=""
+              >Portfolio</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/about/"
+              
+              title=""
+              >About</a
+            >
+          </li>
+
+        
+          
+          <li>
+            <a
+              
+              href="/contact/"
+              
+              title=""
+              >Contact</a
+            >
+          </li>
+
+        
+      </div>
+      <ul>
+        
+        
+          <li>
+            <a class="theme-switch" title="Switch Theme">
+              <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a>
+          </li>
+
+        
+      </ul>
+    </ul>
+  </nav>
+</div>
+</header>
+    <div class="wrapper">
+      <aside><div
+  class="sidebar
+    animated fadeInDown
+
+  "
+>
+  <div class="sidebar__content">
+    <div class="logo-title">
+      <div class="title">
+        <img src="/images/profile.jpg" alt="profile picture" />
+        <h3 title=""><a href="/">sosomasox</a></h3>
+        <div class="description">
+          <p></p>
+        </div>
+      </div>
+    </div>
+    <ul class="social-links">
+      
+        <li>
+          <a href="https://github.com/sosomasox" rel="me" aria-label="GitHub" title="GitHub">
+            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="https://twitter.com/sosomasox" rel="me" aria-label="Twitter" title="Twitter">
+            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+        <li>
+          <a href="mailto:t-soma@sosomasox.com" rel="me" aria-label="e-mail" title="e-mail">
+            <i class="fas fa-envelope fa-2x" aria-hidden="true"></i>
+          </a>
+        </li>
+
+      
+    </ul>
+  </div><footer class="footer footer--sidebar">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          sosomasox
+          2022
+
+
+        
+      </li>
+      
+        <li class="footer__item">
+          <a
+            href="/imprint/"
+            
+            title=""
+          >
+            imprint
+          </a>
+        </li>
+
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
+    crossorigin="anonymous"
+  ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js"
+      integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB&#43;w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script></div>
+</aside>
+      <main>
+        <div class="autopagerize_page_element">
+          <div class="content">
+  <meta name="twitter:title" content="ラズパイKubernetesにKubeVirtを導入してみる" />
+  <meta name="twitter:description" content="ラズパイk8sでKubeVirt使ってみたいなと思い、導入してみた。 動作環境 Harvesterに習って、Kubernetes &#43; Longhorn &#43; MinIO の環境を">
+  <meta name="twitter:image" content="https://sosomasox.com/images/running-kubevirt-on-raspi-kubernetes/thumbnail.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@sosomasox" />
+  <meta name="twitter:creator" content="@sosomasox" />
+  <meta property="og:title" content="ラズパイKubernetesにKubeVirtを導入してみる" />
+  <meta property="og:description" content="ラズパイk8sでKubeVirt使ってみたいなと思い、導入してみた。 動作環境 Harvesterに習って、Kubernetes &#43; Longhorn &#43; MinIO の環境を">
+  <meta property="og:image" content="https://sosomasox.com/images/running-kubevirt-on-raspi-kubernetes/thumbnail.png" />
+  <meta property="og:url" content="https://sosomasox.com/posts/running-kubevirt-on-raspi-kubernetes/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="sosomasox" />
+
+  <div
+    class="post 
+      animated fadeInDown
+
+    "
+  >
+    <div class="post-content">
+      
+        <img class="post-thumbnail" src="/images/running-kubevirt-on-raspi-kubernetes/thumbnail.png" alt="Thumbnail image" />
+
+      
+      <div class="post-title">
+        <h1>ラズパイKubernetesにKubeVirtを導入してみる</h1>
+        
+      </div><p> </p>
+<p>ラズパイk8sでKubeVirt使ってみたいなと思い、導入してみた。</p>
+<p> </p>
+<h1 id="動作環境">動作環境</h1>
+<p><a href="https://harvesterhci.io/">Harvester</a>に習って、Kubernetes + Longhorn + MinIO の環境を整備。</p>
+<ul>
+<li>Raspberry Pi 4B 8GB USB SSD ブート</li>
+<li>Kubernetes v1.23.1</li>
+<li>containerd v1.5.5</li>
+<li>runc 1.0.1-0ubuntu2~20.04.1</li>
+<li>Longhorn(ストレージクラス)</li>
+<li>MinIO(オブジェクトストレージ)</li>
+</ul>
+<p>*<em>ドキュメントによると、<a href="http://kubevirt.io/user-guide/operations/installation/#container-runtime-support">KubeVirtはコンテナランタイムとしてcontainerd、runcはサポートしていない</a>が検証としては問題なく動いた。</em></p>
+<p> </p>
+<h1 id="kubevirtのインストール">KubeVirtのインストール</h1>
+<p>基本的に公式ドキュメントの<a href="https://kubevirt.io/quickstart_cloud/">quickstart</a>をやっていくだけ。</p>
+<p>そのままやるとarm64非対応のコンテナイメージが使用されるため、kubevirt-operatorに対してarm64対応のイメージを使うように変更する。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ diff kubevirt-operator.yaml.org kubevirt-operator.yaml
+</span></span><span style="display:flex;"><span>6212c6212
+</span></span><span style="display:flex;"><span>&lt;           value: quay.io/kubevirt/virt-operator:v0.50.0
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;           value: quay.io/kubevirt/virt-operator:20220228_38eb4710e-arm64
+</span></span><span style="display:flex;"><span>6217c6217
+</span></span><span style="display:flex;"><span>&lt;         image: quay.io/kubevirt/virt-operator:v0.50.0
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;         image: quay.io/kubevirt/virt-operator:20220228_38eb4710e-arm64
+</span></span></code></pre></div><p> </p>
+<h1 id="kubevirtの動作検証">KubeVirtの動作検証</h1>
+<p>インストールが終わったら、<a href="https://kubevirt.io/labs/kubernetes/lab1.html">Labドキュメント</a>に従い、KubeVirtを使ってみる。</p>
+<p>ここでもひと手間。
+仮想ディスクとして使うコンテナイメージをarm64対応のイメージに変える。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ diff vm.yaml.org vm.yaml
+</span></span><span style="display:flex;"><span>27c27
+</span></span><span style="display:flex;"><span>&lt;             memory: 64M
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;             memory: 1024M
+</span></span><span style="display:flex;"><span>34c34
+</span></span><span style="display:flex;"><span>&lt;             image: quay.io/kubevirt/cirros-container-disk-demo
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;             image: quay.io/kubevirt/cirros-container-disk-demo:20220228_38eb4710e-arm64
+</span></span></code></pre></div><p>また、デフォルトで設定されているVMに割り当てるメモリが少なすぎて動作が悪いので増やして実行すると起動した。</p>
+<p><img src="/images/running-kubevirt-on-raspi-kubernetes/experiment_kubevirt.png" alt="Experiment KubeVirt on raspi kubernetes"></p>
+<p> </p>
+<h1 id="containerized-data-importercdiのインストール">Containerized Data Importer(CDI)のインストール</h1>
+<p>Containerized Data Importer(CDI)は、PVを仮想マシンのディスクイメージとして使用できるように、PVCを作成できるようにするアドオン。</p>
+<p>ラボドキュメント <a href="https://kubevirt.io/labs/kubernetes/lab2.html">Labs - Experiment with CDI</a> に従い、インストールする。</p>
+<p>例に習い、arm64対応のコンテナイメージを使用するように修正。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ diff cdi-operator.yaml.org cdi-operator.yaml
+</span></span><span style="display:flex;"><span>2191a2192,2204
+</span></span><span style="display:flex;"><span>&gt; - apiGroups:
+</span></span><span style="display:flex;"><span>&gt;   - coordination.k8s.io
+</span></span><span style="display:flex;"><span>&gt;   resources:
+</span></span><span style="display:flex;"><span>&gt;   - leases
+</span></span><span style="display:flex;"><span>&gt;   verbs:
+</span></span><span style="display:flex;"><span>&gt;   - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>&gt; - apiGroups:
+</span></span><span style="display:flex;"><span>&gt;   - monitoring.coreos.com
+</span></span><span style="display:flex;"><span>&gt;   resources:
+</span></span><span style="display:flex;"><span>&gt;   - prometheusrules
+</span></span><span style="display:flex;"><span>&gt;   - servicemonitors
+</span></span><span style="display:flex;"><span>&gt;   verbs:
+</span></span><span style="display:flex;"><span>&gt;   - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>2239c2252
+</span></span><span style="display:flex;"><span>&lt;           value: quay.io/kubevirt/cdi-controller:v1.38.1
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;           value: quay.io/kubevirt/cdi-controller:20220303_e7e4dfc4-arm64
+</span></span><span style="display:flex;"><span>2241c2254
+</span></span><span style="display:flex;"><span>&lt;           value: quay.io/kubevirt/cdi-importer:v1.38.1
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;           value: quay.io/kubevirt/cdi-importer:20220303_e7e4dfc4-arm64
+</span></span><span style="display:flex;"><span>2243c2256
+</span></span><span style="display:flex;"><span>&lt;           value: quay.io/kubevirt/cdi-cloner:v1.38.1
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;           value: quay.io/kubevirt/cdi-cloner:20220303_e7e4dfc4-arm64
+</span></span><span style="display:flex;"><span>2245c2258
+</span></span><span style="display:flex;"><span>&lt;           value: quay.io/kubevirt/cdi-apiserver:v1.38.1
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;           value: quay.io/kubevirt/cdi-apiserver:20220303_e7e4dfc4-arm64
+</span></span><span style="display:flex;"><span>2247c2260
+</span></span><span style="display:flex;"><span>&lt;           value: quay.io/kubevirt/cdi-uploadserver:v1.38.1
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;           value: quay.io/kubevirt/cdi-uploadserver:20220303_e7e4dfc4-arm64
+</span></span><span style="display:flex;"><span>2249c2262
+</span></span><span style="display:flex;"><span>&lt;           value: quay.io/kubevirt/cdi-uploadproxy:v1.38.1
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;           value: quay.io/kubevirt/cdi-uploadproxy:20220303_e7e4dfc4-arm64
+</span></span><span style="display:flex;"><span>2254c2267
+</span></span><span style="display:flex;"><span>&lt;         image: quay.io/kubevirt/cdi-operator:v1.38.1
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>&gt;         image: quay.io/kubevirt/cdi-operator:20220303_e7e4dfc4-arm64
+</span></span></code></pre></div><p>Role周りでコケたので、動作するRoleを共有しておく</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apiVersion: rbac.authorization.k8s.io/v1
+</span></span><span style="display:flex;"><span>kind: Role
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    app.kubernetes.io/component: storage
+</span></span><span style="display:flex;"><span>    app.kubernetes.io/managed-by: cdi-operator
+</span></span><span style="display:flex;"><span>    cdi.kubevirt.io: <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>  name: cdi-operator
+</span></span><span style="display:flex;"><span>  namespace: cdi
+</span></span><span style="display:flex;"><span>rules:
+</span></span><span style="display:flex;"><span>- apiGroups:
+</span></span><span style="display:flex;"><span>  - rbac.authorization.k8s.io
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>  - rolebindings
+</span></span><span style="display:flex;"><span>  - roles
+</span></span><span style="display:flex;"><span>  verbs:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>- apiGroups:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>  - serviceaccounts
+</span></span><span style="display:flex;"><span>  - configmaps
+</span></span><span style="display:flex;"><span>  - events
+</span></span><span style="display:flex;"><span>  - secrets
+</span></span><span style="display:flex;"><span>  - services
+</span></span><span style="display:flex;"><span>  verbs:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>- apiGroups:
+</span></span><span style="display:flex;"><span>  - apps
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>  - deployments
+</span></span><span style="display:flex;"><span>  - deployments/finalizers
+</span></span><span style="display:flex;"><span>  verbs:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>- apiGroups:
+</span></span><span style="display:flex;"><span>  - route.openshift.io
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>  - routes
+</span></span><span style="display:flex;"><span>  - routes/custom-host
+</span></span><span style="display:flex;"><span>  verbs:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>- apiGroups:
+</span></span><span style="display:flex;"><span>  - config.openshift.io
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>  - proxies
+</span></span><span style="display:flex;"><span>  verbs:
+</span></span><span style="display:flex;"><span>  - get
+</span></span><span style="display:flex;"><span>  - list
+</span></span><span style="display:flex;"><span>  - watch
+</span></span><span style="display:flex;"><span>- apiGroups:
+</span></span><span style="display:flex;"><span>  - coordination.k8s.io
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>  - leases
+</span></span><span style="display:flex;"><span>  verbs:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span><span style="display:flex;"><span>- apiGroups:
+</span></span><span style="display:flex;"><span>  - monitoring.coreos.com
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>  - prometheusrules
+</span></span><span style="display:flex;"><span>  - servicemonitors
+</span></span><span style="display:flex;"><span>  verbs:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#39;*&#39;</span>
+</span></span></code></pre></div><p> </p>
+<h1 id="containerized-data-importercdiの動作検証">Containerized Data Importer(CDI)の動作検証</h1>
+<p>仮想マシンのディスクイメージを作成するためのPVCを用意。</p>
+<p>アノテーション cdi.kubevirt.io/storage.import.endpoint にはクラウドイメージのURLを指定してもいい。
+(イメージのダンロードが遅いのか、PVへ書き込みが遅いので自宅環境のオブジェクトストレージ MinIO に保存したイメージを使用した)</p>
+<p><img src="/images/running-kubevirt-on-raspi-kubernetes/vm_images_on_minio_for_containerized-data-importer.png" alt="VM images on minio for containerized-data-importer"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat pvc_focal-ubuntu.yaml
+</span></span><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>kind: PersistentVolumeClaim
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: <span style="color:#e6db74">&#34;focal-ubuntu&#34;</span>
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    app: containerized-data-importer
+</span></span><span style="display:flex;"><span>  annotations:
+</span></span><span style="display:flex;"><span>    cdi.kubevirt.io/storage.import.endpoint: <span style="color:#e6db74">&#34;http://minio.home.arpa:9000/kubevirt/images/focal-server-cloudimg-arm64.img&#34;</span>
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  storageClassName: longhorn
+</span></span><span style="display:flex;"><span>  accessModes:
+</span></span><span style="display:flex;"><span>  - ReadWriteOnce
+</span></span><span style="display:flex;"><span>  resources:
+</span></span><span style="display:flex;"><span>    requests:
+</span></span><span style="display:flex;"><span>      storage: 32Gi
+</span></span></code></pre></div><p>PVCリソースを作成すると以下のPodが作成される。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kubectl get pod
+</span></span><span style="display:flex;"><span>NAME                         READY   STATUS    RESTARTS   AGE
+</span></span><span style="display:flex;"><span>importer-focal-ubuntu        1/1     Running   <span style="color:#ae81ff">0</span>          96s
+</span></span></code></pre></div><p>作成されたPodのログをみると、アノテーション cdi.kubevirt.io/storage.import.endpoint で指定したURLからイメージをダンロードし、PVへ書き込みを行っている。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kubectl logs -f importer-focal-ubuntu
+</span></span><span style="display:flex;"><span>I0307 12:03:39.079935       <span style="color:#ae81ff">1</span> importer.go:77<span style="color:#f92672">]</span> Starting importer
+</span></span><span style="display:flex;"><span>I0307 12:03:39.080680       <span style="color:#ae81ff">1</span> importer.go:144<span style="color:#f92672">]</span> begin import process
+</span></span><span style="display:flex;"><span>I0307 12:03:39.163006       <span style="color:#ae81ff">1</span> data-processor.go:379<span style="color:#f92672">]</span> Calculating available size
+</span></span><span style="display:flex;"><span>I0307 12:03:39.163169       <span style="color:#ae81ff">1</span> data-processor.go:391<span style="color:#f92672">]</span> Checking out file system volume size.
+</span></span><span style="display:flex;"><span>I0307 12:03:39.163229       <span style="color:#ae81ff">1</span> data-processor.go:399<span style="color:#f92672">]</span> Request image size not empty.
+</span></span><span style="display:flex;"><span>I0307 12:03:39.163298       <span style="color:#ae81ff">1</span> data-processor.go:404<span style="color:#f92672">]</span> Target size 33484955648.
+</span></span><span style="display:flex;"><span>I0307 12:03:39.163783       <span style="color:#ae81ff">1</span> util.go:39<span style="color:#f92672">]</span> deleting file: /data/lost+found
+</span></span><span style="display:flex;"><span>I0307 12:03:39.176560       <span style="color:#ae81ff">1</span> nbdkit.go:294<span style="color:#f92672">]</span> Waiting <span style="color:#66d9ef">for</span> nbdkit PID.
+</span></span><span style="display:flex;"><span>I0307 12:03:39.677209       <span style="color:#ae81ff">1</span> nbdkit.go:315<span style="color:#f92672">]</span> nbdkit ready.
+</span></span><span style="display:flex;"><span>I0307 12:03:39.677326       <span style="color:#ae81ff">1</span> data-processor.go:282<span style="color:#f92672">]</span> New phase: Convert
+</span></span><span style="display:flex;"><span>I0307 12:03:39.677403       <span style="color:#ae81ff">1</span> data-processor.go:288<span style="color:#f92672">]</span> Validating image
+</span></span><span style="display:flex;"><span>I0307 12:03:39.845731       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 0.00
+</span></span><span style="display:flex;"><span>I0307 12:03:40.749676       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 1.00
+</span></span><span style="display:flex;"><span>I0307 12:03:41.689437       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 2.00
+</span></span><span style="display:flex;"><span>I0307 12:03:42.355167       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 3.01
+</span></span><span style="display:flex;"><span>I0307 12:03:43.066549       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 4.01
+</span></span><span style="display:flex;"><span>I0307 12:03:43.825240       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 5.01
+</span></span><span style="display:flex;"><span>I0307 12:03:44.813843       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 6.01
+</span></span><span style="display:flex;"><span>I0307 12:03:45.889127       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 7.02
+</span></span><span style="display:flex;"><span>I0307 12:03:46.994402       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 8.02
+</span></span><span style="display:flex;"><span>I0307 12:03:48.342261       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 9.02
+</span></span><span style="display:flex;"><span>I0307 12:03:49.296064       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 10.02
+</span></span><span style="display:flex;"><span>I0307 12:03:50.639658       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 11.02
+</span></span><span style="display:flex;"><span>I0307 12:03:52.954233       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 12.03
+</span></span><span style="display:flex;"><span>I0307 12:03:53.813618       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 13.03
+</span></span><span style="display:flex;"><span>I0307 12:03:54.765164       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 14.03
+</span></span><span style="display:flex;"><span>I0307 12:03:56.615370       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 15.03
+</span></span><span style="display:flex;"><span>I0307 12:03:57.603956       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 16.04
+</span></span><span style="display:flex;"><span>I0307 12:03:58.769894       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 17.04
+</span></span><span style="display:flex;"><span>I0307 12:03:59.819595       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 18.04
+</span></span><span style="display:flex;"><span>I0307 12:04:01.927565       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 19.04
+</span></span><span style="display:flex;"><span>I0307 12:04:03.161597       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 20.04
+</span></span><span style="display:flex;"><span>I0307 12:04:04.555816       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 21.05
+</span></span><span style="display:flex;"><span>I0307 12:04:05.943461       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 22.05
+</span></span><span style="display:flex;"><span>I0307 12:04:08.140528       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 23.05
+</span></span><span style="display:flex;"><span>I0307 12:04:09.424255       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 24.05
+</span></span><span style="display:flex;"><span>I0307 12:04:10.330730       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 25.06
+</span></span><span style="display:flex;"><span>I0307 12:04:11.062021       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 26.06
+</span></span><span style="display:flex;"><span>I0307 12:04:11.973419       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 27.06
+</span></span><span style="display:flex;"><span>I0307 12:04:18.593630       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 28.06
+</span></span><span style="display:flex;"><span>I0307 12:04:22.055427       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 29.06
+</span></span><span style="display:flex;"><span>I0307 12:04:24.884722       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 30.07
+</span></span><span style="display:flex;"><span>I0307 12:04:26.791225       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 31.07
+</span></span><span style="display:flex;"><span>I0307 12:04:29.608393       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 32.07
+</span></span><span style="display:flex;"><span>I0307 12:04:32.603661       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 33.07
+</span></span><span style="display:flex;"><span>I0307 12:04:33.606206       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 34.08
+</span></span><span style="display:flex;"><span>I0307 12:04:34.829948       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 35.08
+</span></span><span style="display:flex;"><span>I0307 12:04:35.672446       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 36.08
+</span></span><span style="display:flex;"><span>I0307 12:04:36.477719       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 37.08
+</span></span><span style="display:flex;"><span>I0307 12:04:37.401603       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 38.08
+</span></span><span style="display:flex;"><span>I0307 12:04:38.232870       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 39.09
+</span></span><span style="display:flex;"><span>I0307 12:04:39.040414       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 40.09
+</span></span><span style="display:flex;"><span>I0307 12:04:39.807975       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 41.09
+</span></span><span style="display:flex;"><span>I0307 12:04:40.608658       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 42.09
+</span></span><span style="display:flex;"><span>I0307 12:04:41.319462       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 43.10
+</span></span><span style="display:flex;"><span>I0307 12:04:42.077792       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 44.10
+</span></span><span style="display:flex;"><span>I0307 12:04:42.819234       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 45.10
+</span></span><span style="display:flex;"><span>I0307 12:04:43.702368       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 46.10
+</span></span><span style="display:flex;"><span>I0307 12:04:44.640885       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 47.10
+</span></span><span style="display:flex;"><span>I0307 12:04:45.450343       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 48.11
+</span></span><span style="display:flex;"><span>I0307 12:04:46.220950       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 49.11
+</span></span><span style="display:flex;"><span>I0307 12:04:47.076633       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 50.11
+</span></span><span style="display:flex;"><span>I0307 12:04:47.909870       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 51.11
+</span></span><span style="display:flex;"><span>I0307 12:04:48.681887       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 52.11
+</span></span><span style="display:flex;"><span>I0307 12:04:49.460011       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 53.12
+</span></span><span style="display:flex;"><span>I0307 12:04:50.352281       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 54.12
+</span></span><span style="display:flex;"><span>I0307 12:04:51.128488       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 55.12
+</span></span><span style="display:flex;"><span>I0307 12:04:51.981249       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 56.12
+</span></span><span style="display:flex;"><span>I0307 12:04:52.832416       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 57.13
+</span></span><span style="display:flex;"><span>I0307 12:04:53.677531       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 58.13
+</span></span><span style="display:flex;"><span>I0307 12:04:54.496943       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 59.13
+</span></span><span style="display:flex;"><span>I0307 12:04:55.427316       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 60.13
+</span></span><span style="display:flex;"><span>I0307 12:04:56.851398       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 61.13
+</span></span><span style="display:flex;"><span>I0307 12:04:58.062874       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 62.14
+</span></span><span style="display:flex;"><span>I0307 12:04:59.464296       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 63.14
+</span></span><span style="display:flex;"><span>I0307 12:05:00.673475       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 64.14
+</span></span><span style="display:flex;"><span>I0307 12:05:01.784390       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 65.14
+</span></span><span style="display:flex;"><span>I0307 12:05:02.719553       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 66.18
+</span></span><span style="display:flex;"><span>I0307 12:05:04.410326       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 67.18
+</span></span><span style="display:flex;"><span>I0307 12:05:05.521215       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 68.18
+</span></span><span style="display:flex;"><span>I0307 12:05:06.284509       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 69.19
+</span></span><span style="display:flex;"><span>I0307 12:05:07.110314       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 70.19
+</span></span><span style="display:flex;"><span>I0307 12:05:07.983852       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 71.19
+</span></span><span style="display:flex;"><span>I0307 12:05:08.927819       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 72.19
+</span></span><span style="display:flex;"><span>I0307 12:05:10.465950       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 73.19
+</span></span><span style="display:flex;"><span>I0307 12:05:11.250956       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 74.20
+</span></span><span style="display:flex;"><span>I0307 12:05:12.000834       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 75.20
+</span></span><span style="display:flex;"><span>I0307 12:05:12.722558       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 76.20
+</span></span><span style="display:flex;"><span>I0307 12:05:13.636743       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 77.20
+</span></span><span style="display:flex;"><span>I0307 12:05:15.093486       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 78.21
+</span></span><span style="display:flex;"><span>I0307 12:05:16.071400       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 79.21
+</span></span><span style="display:flex;"><span>I0307 12:05:17.021449       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 80.21
+</span></span><span style="display:flex;"><span>I0307 12:05:17.796105       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 81.21
+</span></span><span style="display:flex;"><span>I0307 12:05:18.774796       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 82.21
+</span></span><span style="display:flex;"><span>I0307 12:05:19.422665       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 83.22
+</span></span><span style="display:flex;"><span>I0307 12:05:22.673942       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 84.22
+</span></span><span style="display:flex;"><span>I0307 12:05:22.805443       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 85.24
+</span></span><span style="display:flex;"><span>I0307 12:05:23.524316       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 86.24
+</span></span><span style="display:flex;"><span>I0307 12:05:24.464982       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 87.24
+</span></span><span style="display:flex;"><span>I0307 12:05:24.882805       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 88.25
+</span></span><span style="display:flex;"><span>I0307 12:05:25.080163       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 89.35
+</span></span><span style="display:flex;"><span>I0307 12:05:26.106777       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 90.37
+</span></span><span style="display:flex;"><span>I0307 12:05:26.499847       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 91.39
+</span></span><span style="display:flex;"><span>I0307 12:05:28.600971       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 92.39
+</span></span><span style="display:flex;"><span>I0307 12:05:29.471800       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 93.39
+</span></span><span style="display:flex;"><span>I0307 12:05:29.905051       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 94.40
+</span></span><span style="display:flex;"><span>I0307 12:05:30.399334       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 95.45
+</span></span><span style="display:flex;"><span>I0307 12:05:30.949135       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 96.49
+</span></span><span style="display:flex;"><span>I0307 12:05:31.128077       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 97.53
+</span></span><span style="display:flex;"><span>I0307 12:05:32.400997       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 98.53
+</span></span><span style="display:flex;"><span>I0307 12:05:34.830050       <span style="color:#ae81ff">1</span> qemu.go:257<span style="color:#f92672">]</span> 99.53
+</span></span><span style="display:flex;"><span>I0307 12:06:12.094384       <span style="color:#ae81ff">1</span> data-processor.go:282<span style="color:#f92672">]</span> New phase: Resize
+</span></span><span style="display:flex;"><span>W0307 12:06:12.251009       <span style="color:#ae81ff">1</span> data-processor.go:361<span style="color:#f92672">]</span> Available space less than requested size, resizing image to available space 31642877952.
+</span></span><span style="display:flex;"><span>I0307 12:06:12.251124       <span style="color:#ae81ff">1</span> data-processor.go:372<span style="color:#f92672">]</span> Expanding image size to: <span style="color:#ae81ff">31642877952</span>
+</span></span><span style="display:flex;"><span>I0307 12:06:12.831198       <span style="color:#ae81ff">1</span> data-processor.go:288<span style="color:#f92672">]</span> Validating image
+</span></span><span style="display:flex;"><span>I0307 12:06:12.855083       <span style="color:#ae81ff">1</span> data-processor.go:282<span style="color:#f92672">]</span> New phase: Complete
+</span></span><span style="display:flex;"><span>I0307 12:06:12.855677       <span style="color:#ae81ff">1</span> importer.go:189<span style="color:#f92672">]</span> Import Complete
+</span></span></code></pre></div><p>仮想マシン(VirtualMachineリソース)のマニフェストを用意。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ cat focal-ubuntu.yaml
+</span></span><span style="display:flex;"><span>apiVersion: kubevirt.io/v1
+</span></span><span style="display:flex;"><span>kind: VirtualMachine
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  creationTimestamp: 2022-03-07T00:00:00Z
+</span></span><span style="display:flex;"><span>  generation: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    kubevirt.io/os: linux
+</span></span><span style="display:flex;"><span>  name: focal-ubuntu
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  running: true
+</span></span><span style="display:flex;"><span>  template:
+</span></span><span style="display:flex;"><span>    metadata:
+</span></span><span style="display:flex;"><span>      creationTimestamp: null
+</span></span><span style="display:flex;"><span>      labels:
+</span></span><span style="display:flex;"><span>        kubevirt.io/domain: focal-ubuntu
+</span></span><span style="display:flex;"><span>    spec:
+</span></span><span style="display:flex;"><span>      domain:
+</span></span><span style="display:flex;"><span>        cpu:
+</span></span><span style="display:flex;"><span>          cores: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>        devices:
+</span></span><span style="display:flex;"><span>          disks:
+</span></span><span style="display:flex;"><span>          - disk:
+</span></span><span style="display:flex;"><span>              bus: virtio
+</span></span><span style="display:flex;"><span>            name: disk0
+</span></span><span style="display:flex;"><span>          - cdrom:
+</span></span><span style="display:flex;"><span>              bus: scsi
+</span></span><span style="display:flex;"><span>              readonly: true
+</span></span><span style="display:flex;"><span>            name: cloudinitdisk
+</span></span><span style="display:flex;"><span>        resources:
+</span></span><span style="display:flex;"><span>          requests:
+</span></span><span style="display:flex;"><span>            memory: 4096M
+</span></span><span style="display:flex;"><span>      volumes:
+</span></span><span style="display:flex;"><span>      - name: disk0
+</span></span><span style="display:flex;"><span>        persistentVolumeClaim:
+</span></span><span style="display:flex;"><span>          claimName: focal-ubuntu
+</span></span><span style="display:flex;"><span>      - cloudInitNoCloud:
+</span></span><span style="display:flex;"><span>          userData: |
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">#cloud-config</span>
+</span></span><span style="display:flex;"><span>            hostname: ubuntu
+</span></span><span style="display:flex;"><span>            timezone: Asia/Tokyo
+</span></span><span style="display:flex;"><span>            ssh_pwauth: True
+</span></span><span style="display:flex;"><span>            password: ubuntu
+</span></span><span style="display:flex;"><span>            chpasswd: <span style="color:#f92672">{</span> expire: False <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            disable_root: false
+</span></span><span style="display:flex;"><span>            ssh_authorized_keys:
+</span></span><span style="display:flex;"><span>            - ssh-rsa YOUR_SSH_PUB_KEY_HERE
+</span></span><span style="display:flex;"><span>        name: cloudinitdisk
+</span></span></code></pre></div><p>VirtualMachineリソースを作成するとPodが作成され、VMが起動してくる。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kubectl get pod
+</span></span><span style="display:flex;"><span>NAME                               READY   STATUS    RESTARTS   AGE
+</span></span><span style="display:flex;"><span>virt-launcher-focal-ubuntu-tb8fj   1/1     Running   <span style="color:#ae81ff">0</span>          8m6s
+</span></span><span style="display:flex;"><span>$ kubectl get vm  
+</span></span><span style="display:flex;"><span>NAME           AGE     STATUS    READY
+</span></span><span style="display:flex;"><span>focal-ubuntu   8m15s   Running   True
+</span></span><span style="display:flex;"><span>$ kubectl get vmi
+</span></span><span style="display:flex;"><span>NAME           AGE     PHASE     IP              NODENAME               READY
+</span></span><span style="display:flex;"><span>focal-ubuntu   8m17s   Running   10.244.45.93    node-1.k8s.home.arpa   True
+</span></span></code></pre></div><p>Serviceリーソスを作成するためにlablesをメモ。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>$ kubectl describe pod virt-launcher-focal-ubuntu-tb8fj  | head -n <span style="color:#ae81ff">9</span>
+</span></span><span style="display:flex;"><span>Name:         virt-launcher-focal-ubuntu-tb8fj
+</span></span><span style="display:flex;"><span>Namespace:    default
+</span></span><span style="display:flex;"><span>Priority:     <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>Node:         node-1.k8s.home.arpa/192.168.114.14
+</span></span><span style="display:flex;"><span>Start Time:   Mon, <span style="color:#ae81ff">07</span> Mar <span style="color:#ae81ff">2022</span> 21:11:06 +0900
+</span></span><span style="display:flex;"><span>Labels:       kubevirt.io<span style="color:#f92672">=</span>virt-launcher
+</span></span><span style="display:flex;"><span>              kubevirt.io/created-by<span style="color:#f92672">=</span>75ced691-8fd0-4bee-9b86-468578bb0b88
+</span></span><span style="display:flex;"><span>              kubevirt.io/domain<span style="color:#f92672">=</span>focal-ubuntu
+</span></span><span style="display:flex;"><span>              vm.kubevirt.io/name<span style="color:#f92672">=</span>focal-ubuntu
+</span></span></code></pre></div><p>Serviceリソースのセレクタに上記でメモしたlabelsを記載。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apiVersion: v1
+</span></span><span style="display:flex;"><span>kind: Service
+</span></span><span style="display:flex;"><span>metadata:
+</span></span><span style="display:flex;"><span>  name: focal-ubuntu-svc-lb
+</span></span><span style="display:flex;"><span>  labels:
+</span></span><span style="display:flex;"><span>    app.kubernetes.io/name: focal-ubuntu-svc-lb
+</span></span><span style="display:flex;"><span>  annotations:
+</span></span><span style="display:flex;"><span>    external-dns.alpha.kubernetes.io/hostname: focal-ubuntu.k8s.arpa
+</span></span><span style="display:flex;"><span>spec:
+</span></span><span style="display:flex;"><span>  type: LoadBalancer
+</span></span><span style="display:flex;"><span>  ports:
+</span></span><span style="display:flex;"><span>  - protocol: TCP
+</span></span><span style="display:flex;"><span>    port: <span style="color:#ae81ff">22</span>
+</span></span><span style="display:flex;"><span>    targetPort: <span style="color:#ae81ff">22</span>
+</span></span><span style="display:flex;"><span>  selector:
+</span></span><span style="display:flex;"><span>    kubevirt.io: virt-launcher
+</span></span><span style="display:flex;"><span>    kubevirt.io/created-by: 75ced691-8fd0-4bee-9b86-468578bb0b88
+</span></span><span style="display:flex;"><span>    kubevirt.io/domain: focal-ubuntu
+</span></span><span style="display:flex;"><span>    vm.kubevirt.io/name: focal-ubuntu
+</span></span></code></pre></div><p>作成したVirtualMachineリソースにSSH接続できた。</p>
+<p><img src="/images/running-kubevirt-on-raspi-kubernetes/VirtualMachine.png" alt="VirtualMachine"></p>
+<p> </p>
+<h1 id="最後に">最後に</h1>
+<p>VMを再起動するとIPが付与されなくなるのどうにかしたい(何か設定があるのだろう)。</p>
+<p>細かい設定がわからないので勉強していきたい。</p>
+<p>KubeVirt、キャッチアップしていきたい。</p>
+</div>
+    <div class="post-footer">
+      <div class="info">
+        
+
+        
+      </div>
+    </div>
+
+    
+  </div>
+
+  <div>
+    
+      <div id="commpost"></div>
+<script type="text/javascript">
+    (function() {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript'; dsq.async = true; dsq.src = 'https://commpost.sosomasox.com/js/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+
+         var dlq = document.createElement('link');
+         dlq.rel = 'stylesheet'; dlq.type = 'text/css'; dlq.href = 'https://commpost.sosomasox.com/assets/css/embed.css';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dlq);
+    })();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+
+    
+  </div>
+
+
+          </div>
+        </div>
+      </main>
+    </div><footer class="footer footer--base">
+  <div class="by_farbox">
+    <ul class="footer__list">
+      <li class="footer__item">
+        &copy;
+        
+          sosomasox
+          2022
+
+
+        
+      </li>
+      
+        <li class="footer__item">
+          <a
+            href="/imprint/"
+            
+            title=""
+          >
+            imprint
+          </a>
+        </li>
+
+      
+    </ul>
+  </div>
+</footer>
+  
+  <script
+    type="text/javascript"
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
+    crossorigin="anonymous"
+  ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js"
+      integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB&#43;w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script></body>
+</html>

@@ -18,7 +18,7 @@
   </title>
 
   
-  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.92.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="utf-8" /><meta name="generator" content="Hugo 0.93.2" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta
     name="description"
     content="
@@ -67,8 +67,8 @@
   
   <script
     type="text/javascript"
-    src="/js/anatole-header.min.2a2cd9614b7d007dfbb75e8da19e3a0fa872ceab53c6d000c00b7a0c89b85bfc.js"
-    integrity="sha256-KizZYUt9AH37t16NoZ46D6hyzqtTxtAAwAt6DIm4W/w="
+    src="/js/anatole-header.min.d0408165d31a17f17bba83038bf54e86121f85021bdf936382e636f0f77a952f.js"
+    integrity="sha256-0ECBZdMaF/F7uoMDi/VOhhIfhQIb35NjguY28Pd6lS8="
     crossorigin="anonymous"
   ></script>
 
@@ -77,8 +77,8 @@
     
     <script
       type="text/javascript"
-      src="/js/anatole-theme-switcher.min.7fd87181cdd7e8413aa64b6867bb32f3a8dc242e684fc7d5bbb9f600dbc2b6eb.js"
-      integrity="sha256-f9hxgc3X6EE6pktoZ7sy86jcJC5oT8fVu7n2ANvCtus="
+      src="/js/anatole-theme-switcher.min.65e936b591bf81484a5ac438c8e4ae6454fb25516d58ce911e4888d7f230bdc5.js"
+      integrity="sha256-Zek2tZG/gUhKWsQ4yOSuZFT7JVFtWM6RHkiI1/IwvcU="
       crossorigin="anonymous"
     ></script>
 
@@ -334,8 +334,8 @@
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
       defer
@@ -403,35 +403,35 @@ nginxのPodが3つ稼働しており、LoadBalancer Serviceを利用してそれ
 <p>このコンポーネントは、ブログ記事を管理しているGitHubリポジトリ上のmasterブランチに対する更新があったとき、ブログ記事を保管しているNFSに対して更新内容を反映させる役割を担っています。</p>
 <p>これによって、GitHubリポジトリ上のmasterブランチへのpushをトリガーとして継続的デリバリーが行われるため、ブログの更新や内容の修正などが <em><strong>&ldquo;git push&rdquo;</strong></em> で行えるようになっています。</p>
 <p>Pod上では、以下のスクリプトが動作しています。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
-</span><span style="color:#75715e"></span>
-LOOP_STOP_FLAG<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
-trap <span style="color:#e6db74">&#39;LOOP_STOP_FLAG=1; trap 1 2 3 4 9 15&#39;</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">9</span> <span style="color:#ae81ff">15</span>
-
-<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>GITHUB_ACCOUNT<span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">||</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>GITHUB_REPOSITORY_NAME<span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-    exit <span style="color:#ae81ff">1</span>
-<span style="color:#66d9ef">fi</span>
-
-<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>DIRECTORY_NAME<span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-    DIRECTORY_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>GITHUB_REPOSITORY_NAME<span style="color:#e6db74">}</span>
-<span style="color:#66d9ef">fi</span>
-
-rm -rf <span style="color:#e6db74">${</span>DIRECTORY_NAME<span style="color:#e6db74">}</span>
-git clone https://github.com/<span style="color:#e6db74">${</span>GITHUB_ACCOUNT<span style="color:#e6db74">}</span>/<span style="color:#e6db74">${</span>GITHUB_REPOSITORY_NAME<span style="color:#e6db74">}</span>.git <span style="color:#e6db74">${</span>DIRECTORY_NAME<span style="color:#e6db74">}</span>
-
-<span style="color:#66d9ef">while</span> <span style="color:#f92672">[</span> $LOOP_STOP_FLAG -eq <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
-<span style="color:#66d9ef">do</span>
-    git fetch origin
-
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">`</span>git diff origin/master | wc -l<span style="color:#e6db74">`</span> -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-        git pull
-    <span style="color:#66d9ef">fi</span>
-
-    sleep <span style="color:#ae81ff">1</span>
-<span style="color:#66d9ef">done</span>
-
-exit <span style="color:#ae81ff">0</span>
-</code></pre></div><p><em><strong>GITHUB_ACCOUNT</strong></em> や <em><strong>GITHUB_REPOSITORY_NAME</strong></em> などの環境変数はCofigMapリソースを利用して設定しています。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>LOOP_STOP_FLAG<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>trap <span style="color:#e6db74">&#39;LOOP_STOP_FLAG=1; trap 1 2 3 4 9 15&#39;</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">9</span> <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>GITHUB_ACCOUNT<span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">||</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>GITHUB_REPOSITORY_NAME<span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>DIRECTORY_NAME<span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    DIRECTORY_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>GITHUB_REPOSITORY_NAME<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rm -rf <span style="color:#e6db74">${</span>DIRECTORY_NAME<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>git clone https://github.com/<span style="color:#e6db74">${</span>GITHUB_ACCOUNT<span style="color:#e6db74">}</span>/<span style="color:#e6db74">${</span>GITHUB_REPOSITORY_NAME<span style="color:#e6db74">}</span>.git <span style="color:#e6db74">${</span>DIRECTORY_NAME<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#f92672">[</span> $LOOP_STOP_FLAG -eq <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    git fetch origin
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">`</span>git diff origin/master | wc -l<span style="color:#e6db74">`</span> -ne <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        git pull
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    sleep <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><p><em><strong>GITHUB_ACCOUNT</strong></em> や <em><strong>GITHUB_REPOSITORY_NAME</strong></em> などの環境変数はCofigMapリソースを利用して設定しています。</p>
 <p> </p>
 <h3 id="ngrok-tunneling">ngrok-tunneling</h3>
 <p>このコンポーネントは、ngrokに対してHTTPトンネリング接続することで外部公開用URLを取得する役割と、外部公開用URLに対するアクセスを本ブログのwebサーバとしての役割を担っているongoingコンポーネントにプロキシしたり、ローカル上でのみアクセス可能なngrokのwebインターフェースに対して外部からのアクセスを可能するリバースプロキシサーバとしての役割を担っています。</p>
@@ -445,33 +445,33 @@ exit <span style="color:#ae81ff">0</span>
 <h3 id="ngrok-http-webhook">ngrok-http-webhook</h3>
 <p>最後に、このコンポーネントは、ngrokサービスから取得した外部公開用URLに変更があったときに指定したエンドポイントに対してwebhookする役割を担っています。</p>
 <p>Pod上では以下のスクリプトが動作しています。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
-</span><span style="color:#75715e"></span>
-LOOP_STOP_FLAG<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
-NGROK_URL<span style="color:#f92672">=</span>
-PREV_NGROK_URL<span style="color:#f92672">=</span>
-
-trap <span style="color:#e6db74">&#39;LOOP_STOP_FLAG=1; trap 1 2 3 4 9 15&#39;</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">9</span> <span style="color:#ae81ff">15</span>
-
-<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>NGROK_INTERFACE<span style="color:#66d9ef">:-</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">||</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>WEBHOOK_ENDPOINT<span style="color:#66d9ef">:-</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-    exit <span style="color:#ae81ff">1</span>
-<span style="color:#66d9ef">fi</span>
-
-<span style="color:#66d9ef">while</span> <span style="color:#f92672">[</span> $LOOP_STOP_FLAG -eq <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
-<span style="color:#66d9ef">do</span>
-    NGROK_URL<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>curl -m <span style="color:#ae81ff">1</span> -s <span style="color:#e6db74">${</span>NGROK_INTERFACE<span style="color:#e6db74">}</span>/api/tunnels | jq -r .tunnels<span style="color:#f92672">[]</span>.public_url | grep --color<span style="color:#f92672">=</span>never https://*<span style="color:#e6db74">`</span>
-
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$NGROK_URL<span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span>$PREV_NGROK_URL<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-        STATUS_CODE<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>curl -m <span style="color:#ae81ff">1</span> -X POST -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -d <span style="color:#e6db74">&#34;{\&#34;ngrok_url\&#34;:\&#34;</span>$NGROK_URL<span style="color:#e6db74">\&#34;}&#34;</span> $WEBHOOK_ENDPOINT -o /dev/null -w <span style="color:#e6db74">&#39;%{http_code}&#39;</span> -s<span style="color:#e6db74">`</span>
-    <span style="color:#66d9ef">fi</span>
-
-    PREV_NGROK_URL<span style="color:#f92672">=</span>$NGROK_URL
-
-    sleep <span style="color:#ae81ff">1</span>
-<span style="color:#66d9ef">done</span>
-
-exit <span style="color:#ae81ff">0</span>
-</code></pre></div><p><em><strong>NGROK_INTERFACE</strong></em> や <em><strong>WEBHOOK_ENDPOINT</strong></em> といった環境変数はComfigMapリソースを利用して設定しています。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>LOOP_STOP_FLAG<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>NGROK_URL<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>PREV_NGROK_URL<span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>trap <span style="color:#e6db74">&#39;LOOP_STOP_FLAG=1; trap 1 2 3 4 9 15&#39;</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">9</span> <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>NGROK_INTERFACE<span style="color:#66d9ef">:-</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">||</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">${</span>WEBHOOK_ENDPOINT<span style="color:#66d9ef">:-</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#e6db74">}</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#f92672">[</span> $LOOP_STOP_FLAG -eq <span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    NGROK_URL<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>curl -m <span style="color:#ae81ff">1</span> -s <span style="color:#e6db74">${</span>NGROK_INTERFACE<span style="color:#e6db74">}</span>/api/tunnels | jq -r .tunnels<span style="color:#f92672">[]</span>.public_url | grep --color<span style="color:#f92672">=</span>never https://*<span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$NGROK_URL<span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;</span>$PREV_NGROK_URL<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        STATUS_CODE<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>curl -m <span style="color:#ae81ff">1</span> -X POST -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -d <span style="color:#e6db74">&#34;{\&#34;ngrok_url\&#34;:\&#34;</span>$NGROK_URL<span style="color:#e6db74">\&#34;}&#34;</span> $WEBHOOK_ENDPOINT -o /dev/null -w <span style="color:#e6db74">&#39;%{http_code}&#39;</span> -s<span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PREV_NGROK_URL<span style="color:#f92672">=</span>$NGROK_URL
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    sleep <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>exit <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><p><em><strong>NGROK_INTERFACE</strong></em> や <em><strong>WEBHOOK_ENDPOINT</strong></em> といった環境変数はComfigMapリソースを利用して設定しています。</p>
 <p> </p>
 <h3 id="最後に">最後に</h3>
 <p>このブログはKubernetesの勉強を兼ねて作成しました。</p>
@@ -542,8 +542,8 @@ exit <span style="color:#ae81ff">0</span>
   
   <script
     type="text/javascript"
-    src="/js/medium-zoom.min.71100d84fab0ad794b8399a66ac810700cc78d703f715dc10af4d7ba7b761362.js"
-    integrity="sha256-cRANhPqwrXlLg5mmasgQcAzHjXA/cV3BCvTXunt2E2I="
+    src="/js/medium-zoom.min.4a40b20209bc12e56cf77caff5feaa93fecd6b0d97d51b33afb0265a732ce636.js"
+    integrity="sha256-SkCyAgm8EuVs93yv9f6qk/7Naw2X1Rszr7AmWnMs5jY="
     crossorigin="anonymous"
   ></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR&#43;zwDAROtph0PXGte6ia8heboACF9R5l/DiY&#43;WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous" /><script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8&#43;w2LAIftJEULZABrF9PPFv&#43;tVkH" crossorigin="anonymous"></script><script
       defer
