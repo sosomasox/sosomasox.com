@@ -1,5 +1,5 @@
 ---
-title: "ラズパイKubernetesにKubeVirtを導入してみる"
+title: "ラズパイKubernetesにKubeVirtを導入してみた"
 date: 2022-03-07T18:17:34+09:00
 draft: false
 Description: ""
